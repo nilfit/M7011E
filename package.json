@@ -3,14 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "build": "browserify -t babelify src/main.jsx -o public/javascripts/bundle.js"
+    "start": "forever -o ./logs/out.log -e ./logs/err.log ./bin/www",
+    "stop": "forever stop 0",
+    "build": "browserify -t babelify src/main.jsx -o public/javascripts/bundle.js",
+    "install": "mkdir -p logs"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "express": "~4.14.0",
+    "forever": "^0.15.3",
     "morgan": "~1.7.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
