@@ -3,10 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "forever -o ./logs/out.log -e ./logs/err.log ./bin/www",
-    "stop": "forever stop 0",
-    "build": "browserify -t babelify src/main.jsx -o public/javascripts/bundle.js",
-    "install": "mkdir -p logs"
+    "start": "node ./bin/www",
+    "build": "browserify -t babelify src/main.jsx -o public/javascripts/bundle.js"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
