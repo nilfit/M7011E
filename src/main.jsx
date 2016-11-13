@@ -1,7 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {About} from './about.jsx';
+
+function App() {
+    return (
+        <div>
+            <About />
+        </div>
+    );
+}
 
 ReactDOM.render(
-  <h1>Hello, world!</h1>,
+  <App />,
   document.getElementById('root')
 );
