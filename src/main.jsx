@@ -1,16 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {About} from './about.jsx';
+import { Router, Route, IndexRoute, hashHistory} from 'react-router';
+import Menu from './menu.jsx';
+import About from './views/about.jsx';
+import Feed from './views/feed.jsx';
+import Profile from './views/profile.jsx';
 
-function App() {
-    return (
-        <div>
-            <About />
-        </div>
-    );
+class Main extends React.Component{
+    render() {
+        return (
+            <div>
+                <Menu />
+
+                <div className="content">
+                    {this.props.children}
+                </div>
+            </div>
+        );
+    }
 }
 
 ReactDOM.render(
-  <App />,
+    <Router history={hashHistory}>
+        <Route path="/" component={Main}>
+            <IndexRoute component={Feed}/>
+            <Route path="/about" component={About}/>
+            <Route path="/profile" component={Profile}/>
+        </Route>
+    </Router>,
   document.getElementById('root')
 );

@@ -1,0 +1,72 @@
+body {
+    margin:0;
+}
+/* CSS for the menu/navigation bar at the top */
+.menu li h1 {
+    float: left;
+    color: white;
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+}
+
+.menu ul  {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.menu li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    float: right;
+}
+
+.menu li a:hover:not(.active) {
+    background-color: #111;
+}
+
+/* CSS applying to each view, such as About, Feed...etc */
+.content {
+    background-color: white;
+    margin: 70px 50px 50px 50px;
+}
+
+/* CSS for the post component */
+
+.post {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    color: gray;
+    float: left;
+}
+
+.post ul {
+    list-style-type: none;
+}
+
+.post ul li a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.post_user{
+    float: left;
+}
+
+.post_data {
+}
+
+.post_img {
+    border: 2px solid lightblue;
+    border-radius: 50%;
+}
