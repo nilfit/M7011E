@@ -25467,7 +25467,7 @@ module.exports = warning;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25487,70 +25487,70 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Post = function (_React$Component) {
-    _inherits(Post, _React$Component);
+  _inherits(Post, _React$Component);
 
-    function Post() {
-        _classCallCheck(this, Post);
+  function Post() {
+    _classCallCheck(this, Post);
 
-        return _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).apply(this, arguments));
+  }
+
+  _createClass(Post, [{
+    key: 'render',
+    value: function render() {
+      var audio = this.props.audio; //change later
+      var img = this.props.img;
+      var name = this.props.name;
+
+      var currentDate = new Date();
+      var date = "Date: " + currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
+      return _react2.default.createElement(
+        'div',
+        { className: 'post' },
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement('img', { src: img, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/profile' },
+              name
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'audio',
+              { controls: true },
+              _react2.default.createElement('source', { src: audio + ".ogg", type: 'audio/ogg' }),
+              _react2.default.createElement('source', { src: audio + ".mp3", type: 'audio/mpeg' }),
+              _react2.default.createElement('source', { src: audio + ".wav", type: 'audio/wav' }),
+              'Your browser does not support the audio element.'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            date
+          )
+        )
+      );
     }
+  }]);
 
-    _createClass(Post, [{
-        key: 'render',
-        value: function render() {
-            var audio = this.props.audio; //change later
-            var img = this.props.img;
-            var user = this.props.user;
-
-            var currentDate = new Date();
-            var date = "Date: " + currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
-            return _react2.default.createElement(
-                'div',
-                { className: 'post' },
-                _react2.default.createElement(
-                    'ul',
-                    { className: 'post_user' },
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement('img', { src: img, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            _reactRouter.Link,
-                            { to: '/profile' },
-                            'birdboy94'
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    'ul',
-                    { className: 'post_user' },
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            'audio',
-                            { controls: true },
-                            _react2.default.createElement('source', { src: audio + ".ogg", type: 'audio/ogg' }),
-                            _react2.default.createElement('source', { src: audio + ".mp3", type: 'audio/mpeg' }),
-                            _react2.default.createElement('source', { src: audio + ".wav", type: 'audio/wav' }),
-                            'Your browser does not support the audio element.'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        date
-                    )
-                )
-            );
-        }
-    }]);
-
-    return Post;
+  return Post;
 }(_react2.default.Component);
 
 exports.default = Post;
@@ -25595,50 +25595,50 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Main = function (_React$Component) {
-    _inherits(Main, _React$Component);
+  _inherits(Main, _React$Component);
 
-    function Main() {
-        _classCallCheck(this, Main);
+  function Main() {
+    _classCallCheck(this, Main);
 
-        return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).apply(this, arguments));
+  }
+
+  _createClass(Main, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(_menu2.default, null),
+        _react2.default.createElement(
+          'div',
+          { className: 'content' },
+          this.props.children
+        )
+      );
     }
+  }]);
 
-    _createClass(Main, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(_menu2.default, null),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'content' },
-                    this.props.children
-                )
-            );
-        }
-    }]);
-
-    return Main;
+  return Main;
 }(_react2.default.Component);
 
 _reactDom2.default.render(_react2.default.createElement(
-    _reactRouter.Router,
-    { history: _reactRouter.hashHistory },
-    _react2.default.createElement(
-        _reactRouter.Route,
-        { path: '/', component: Main },
-        _react2.default.createElement(_reactRouter.IndexRoute, { component: _feed2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: '/profile', component: _profile2.default })
-    )
+  _reactRouter.Router,
+  { history: _reactRouter.hashHistory },
+  _react2.default.createElement(
+    _reactRouter.Route,
+    { path: '/', component: Main },
+    _react2.default.createElement(_reactRouter.IndexRoute, { component: _feed2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/profile', component: _profile2.default })
+  )
 ), document.getElementById('root'));
 
 },{"./menu.jsx":229,"./views/about.jsx":230,"./views/feed.jsx":231,"./views/profile.jsx":232,"react":224,"react-dom":48,"react-router":75}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25658,74 +25658,74 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Menu = function (_React$Component) {
-    _inherits(Menu, _React$Component);
+  _inherits(Menu, _React$Component);
 
-    function Menu() {
-        _classCallCheck(this, Menu);
+  function Menu() {
+    _classCallCheck(this, Menu);
 
-        return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).apply(this, arguments));
+  }
+
+  _createClass(Menu, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'menu' },
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'h1',
+              null,
+              'Birdsong'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/' },
+              'Sign Out'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/about' },
+              'About'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/profile' },
+              'Profile'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/' },
+              'Feed'
+            )
+          )
+        )
+      );
     }
+  }]);
 
-    _createClass(Menu, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { className: 'menu' },
-                _react2.default.createElement(
-                    'ul',
-                    null,
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            'h1',
-                            null,
-                            'Birdsong'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            _reactRouter.Link,
-                            { to: '/' },
-                            'Sign Out'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            _reactRouter.Link,
-                            { to: '/about' },
-                            'About'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            _reactRouter.Link,
-                            { to: '/profile' },
-                            'Profile'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            _reactRouter.Link,
-                            { to: '/' },
-                            'Feed'
-                        )
-                    )
-                )
-            );
-        }
-    }]);
-
-    return Menu;
+  return Menu;
 }(_react2.default.Component);
 
 exports.default = Menu;
@@ -25734,7 +25734,7 @@ exports.default = Menu;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25752,40 +25752,40 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var About = function (_React$Component) {
-    _inherits(About, _React$Component);
+  _inherits(About, _React$Component);
 
-    function About() {
-        _classCallCheck(this, About);
+  function About() {
+    _classCallCheck(this, About);
 
-        return _possibleConstructorReturn(this, (About.__proto__ || Object.getPrototypeOf(About)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (About.__proto__ || Object.getPrototypeOf(About)).apply(this, arguments));
+  }
+
+  _createClass(About, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h1',
+          null,
+          'About Birdsong'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          'Birdsong is a social media website designed for those who prefer listening to people instead of reading! Instead of posting boring text messages or pictures, Birdsong takes social interactions to the next level by allowing users to record and upload audio clips for their followers to listen to.'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          'Birdsong was built using modern technologies such as React, an open-source JavaScript library for creating interactive user interfaces.'
+        )
+      );
     }
+  }]);
 
-    _createClass(About, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    'About Birdsong'
-                ),
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    ' Birdsong is a social media website designed for those who prefer listening to people instead of reading! Instead of posting boring text messages or pictures, Birdsong takes social interactions to the next level by allowing users to record and upload audio clips for their followers to listen to.'
-                ),
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    ' Birdsong was built using modern technologies such as React, an open-source JavaScript library for creating interactive user interfaces.'
-                )
-            );
-        }
-    }]);
-
-    return About;
+  return About;
 }(_react2.default.Component);
 
 exports.default = About;
@@ -25794,7 +25794,7 @@ exports.default = About;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25816,31 +25816,28 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Feed = function (_React$Component) {
-    _inherits(Feed, _React$Component);
+  _inherits(Feed, _React$Component);
 
-    function Feed() {
-        _classCallCheck(this, Feed);
+  function Feed() {
+    _classCallCheck(this, Feed);
 
-        return _possibleConstructorReturn(this, (Feed.__proto__ || Object.getPrototypeOf(Feed)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Feed.__proto__ || Object.getPrototypeOf(Feed)).apply(this, arguments));
+  }
+
+  _createClass(Feed, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'feed' },
+        _react2.default.createElement(_post2.default, { name: 'birdboy94', audio: './marmot', img: './bird.png' }),
+        _react2.default.createElement(_post2.default, { name: 'someDude', audio: './liketwitter', img: './face.png' }),
+        _react2.default.createElement(_post2.default, { name: 'birdboy94', audio: './marmot', img: './bird.png' })
+      );
     }
+  }]);
 
-    _createClass(Feed, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'This is a feed'
-                ),
-                _react2.default.createElement(_post2.default, { name: 'birdboy94', audio: './marmot', img: './bird.png' })
-            );
-        }
-    }]);
-
-    return Feed;
+  return Feed;
 }(_react2.default.Component);
 
 exports.default = Feed;
