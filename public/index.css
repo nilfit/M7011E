@@ -1,0 +1,86 @@
+body {
+  margin:0;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+/* CSS for the menu/navigation bar at the top */
+.menu {
+  color: white;
+}
+
+.menu ul  {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.menu li h1 {
+  float: left;
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+}
+
+.menu li a {
+  display: block;
+  color: inherit;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  float: right;
+}
+
+.menu li a:hover:not(.active) {
+  background-color: #111;
+}
+
+/* CSS applying to each view, such as About, Feed...etc */
+.content {
+  background-color: white;
+  margin: 70px 15% 50px 15%;
+}
+
+/* CSS for the feed */
+.feed {
+  width: 500px;
+  height: 110px;
+}
+
+/* CSS for the post component */
+
+.post {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  padding: 5px;
+  margin-bottom: 30px;
+  height: 100%;
+  width: 100%;
+  color: gray;
+}
+
+.post ul {
+  list-style-type: none;
+  float:left;
+}
+
+.post ul li a {
+  text-decoration: none;
+}
+
+.post_user {
+  border: 1px solid blue;
+}
+
+.post_data {
+  border: 1px solid blue;
+}
+
+.post_img {
+  border: 2px solid lightblue;
+  border-radius: 50%;
+}
