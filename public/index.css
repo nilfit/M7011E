@@ -65,7 +65,7 @@ body {
 
 .post ul {
   list-style-type: none;
-  float:left;
+  float: left;
 }
 
 .post ul li a {
@@ -83,4 +83,10 @@ body {
 .post_img {
   border: 2px solid lightblue;
   border-radius: 50%;
+}
+
+/* CSS for profiles */
+.profile ul {
+  list-style-type: none;
+  float: left;
 }
