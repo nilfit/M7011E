@@ -7,8 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var secrets = require('./secret/secrets')
-console.log(secrets)
+var secrets = require('./secret/secrets');
 
 var auth = require('./routes/auth');
 var api = require('./routes/api');
