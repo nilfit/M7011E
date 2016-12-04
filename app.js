@@ -7,6 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var fs = require('fs');
 
 var auth = require('./routes/auth');
 var api = require('./routes/api');
@@ -26,7 +27,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(cookieParser());
-app.use(session({ secret: 'keyboardcat',
+var conf = JSON.parse(fs.readFileSync('./secret/secrets.json', 'utf8'));
+app.use(session({ secret: conf.sessionSecret,
                   resave: false,
                   saveUninitialized: false }));
 app.use(passport.initialize());
