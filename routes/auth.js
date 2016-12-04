@@ -5,14 +5,13 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var db = require('../db');
 var fs = require('fs');
 
-router.get('/google',
-  passport.authenticate('google', { scope: ['openid'] }));
+// router.get('/google',
+//   passport.authenticate('google', { scope: ['openid'] }));
 
-router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/');
-});
+router.post('/google/callback', passport.authenticate('google'),
+  (req, res) => {
+    res.status(200).end();
+  });
 
 router.get('/logout', (req, res) => {
   req.logout();
@@ -46,9 +45,15 @@ passport.use(new GoogleStrategy({
   }
 ));
 passport.serializeUser((user, done) => done(null, user._id));
-passport.deserializeUser(function (_id, done) {
-  db.findUserById(_id)
-    .then(user => done(null, user))
+passport.deserializeUser((_id, done) => {
+  db.findUserByIdString(_id)
+    .then(user => {
+      if (user) {
+        done(null, user);
+      } else {
+        throw "User deserialization failed";
+      }
+    })
     .catch(err => done(err));
 });
 

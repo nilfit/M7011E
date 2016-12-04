@@ -11,20 +11,11 @@ MongoClient.connect(url).then(value => db = value);
 function findUserByIdString(useridString){
   return co(function*() {
     // var db = yield MongoClient.connect(url);
-    // TODO change to the correct collection (user)
-    var col = db.collection('users');
+    var col = db.collection('user');
     var doc = yield col.findOne({_id : ObjectID.createFromHexString(useridString)});
     return doc;
   }).catch(function(err) {
     console.log(err.stack);
-  });
-}
-
-function findUserById(_id) {
-  return co(function*() {
-    var col = db.collection('user');
-    var doc = yield col.findOne({_id: _id});
-    return doc;
   });
 }
 

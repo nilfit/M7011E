@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('express-session');
 var subdomain = require('express-subdomain')
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -12,16 +13,27 @@ var api = require('./routes/api');
 
 var app = express();
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next(null);
+  }
+  res.status(401).end();
+}
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
+app.use(session({ secret: 'keyboardcat',
+                  resave: false,
+                  saveUninitialized: false }));
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 app.use('/auth', auth);
-app.use('/api', api);
+app.use('/api', ensureAuthenticated, api);
+var db = require('./db.js');
 app.use(express.static(path.join(__dirname, 'public')));
 
 
