@@ -36,5 +36,4 @@ function findOrCreateGoogleUser(googleid) {
 }
 
 exports.findUserByIdString = findUserByIdString;
-exports.findUserById = findUserById;
 exports.findOrCreateGoogleUser = findOrCreateGoogleUser;

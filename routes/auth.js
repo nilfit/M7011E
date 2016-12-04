@@ -27,7 +27,7 @@ router.get('/logout', (req, res) => {
 //   if (err) throw err;
 //   conf = JSON.parse(data
 // });
-var conf = JSON.parse(fs.readFileSync('./secret/passport.json', 'utf8'));
+var conf = JSON.parse(fs.readFileSync('./secret/secrets.json', 'utf8'));
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
