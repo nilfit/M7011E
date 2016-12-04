@@ -4,9 +4,16 @@
     <link rel="stylesheet" type="text/css" href="./index.css">
     <meta charset="UTF-8" />
     <title>Birdsong</title>
+     <meta name="google-signin-client_id" content="197500185071-lptrsekcf4fa4mjmi7kf2p86k9nebjt4.apps.googleusercontent.com">
   </head>
   <body>
     <div id="root"></div>
     <script src="/javascripts/bundle.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded" async defer></script>
+    <script type="text/javascript" async defer>
+      function triggerGoogleLoaded() {
+        window.dispatchEvent(new Event('google-loaded'));
+      }
+    </script>
   </body>
 </html>
