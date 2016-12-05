@@ -6,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var passport = require('passport');
+// var passport = require('passport');
 var secrets = require('./secret/secrets');
 
 var auth = require('./routes/auth');
@@ -15,7 +15,7 @@ var api = require('./routes/api');
 var app = express();
 
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
+  if (req.sess.login) {
     return next(null);
   }
   res.status(401).end();
@@ -29,12 +29,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(cookieParser());
 app.use(session({ secret: secrets.sessionSecret,
                   resave: false,
-                  saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
+                  saveUninitialized: false,
+                  // TODO use a different store
+                  rolling: true,
+                  cookie: {
+                    maxAge: 900000 // 15 minutes
+                  }
+                  }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.use('/auth', auth);
 app.use('/api', ensureAuthenticated, api);
 var db = require('./db.js');
+if (app.get('env') === 'development') {
+  app.get('/test', (req, res) => {
+    var sess = req.session;
+    if (sess.login) {
+      res.send('logged in as ' + sess.login);
+    } else {
+      res.send('not logged in');
+    }
+  });
+}
 app.use(express.static(path.join(__dirname, 'public')));
 
 

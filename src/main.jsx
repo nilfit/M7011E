@@ -4,7 +4,6 @@ import { Router, Route, IndexRoute, hashHistory} from 'react-router';
 import Menu from './menu.jsx';
 import About from './views/about.jsx';
 import Feed from './views/feed.jsx';
-import Login from './views/login.jsx';
 import ProfileWrapper from './views/profile.jsx';
 
 class Main extends React.Component{
@@ -24,7 +23,6 @@ ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={Main}>
       <IndexRoute component={Feed}/>
-      <Route path="/login" component={Login}/>
       <Route path="/feed" component={Feed}/>
       <Route path="/about" component={About}/>
       <Route path="/profile/:userID" component={ProfileWrapper}/>
