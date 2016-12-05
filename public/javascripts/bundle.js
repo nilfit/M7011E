@@ -25487,33 +25487,38 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var LoginButton = function (_React$Component) {
   _inherits(LoginButton, _React$Component);
 
-  function LoginButton() {
+  function LoginButton(props) {
     _classCallCheck(this, LoginButton);
 
-    return _possibleConstructorReturn(this, (LoginButton.__proto__ || Object.getPrototypeOf(LoginButton)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (LoginButton.__proto__ || Object.getPrototypeOf(LoginButton)).call(this, props));
+
+    _this.onSignIn = _this.onSignIn.bind(_this);
+    _this.renderGoogleLoginButton = _this.renderGoogleLoginButton.bind(_this);
+    return _this;
   }
 
   _createClass(LoginButton, [{
     key: 'onSignIn',
     value: function onSignIn(googleUser) {
-      alert("sending post");
-      // var id_token = googleUser.getAuthResponse().id_token;
-      // var xhr = new XMLHttpRequest();
-      // xhr.open('POST', '/auth/google/callback');
-      // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      // xhr.onload = function() {
-      //   if (xhr.status == 200) {
-      //     // login successful
-      //     var birdsongId = xhr.responseText;
-      //     console.log('Signed in as: ' + birdsongId);
-      //     // TODO decide what to actually do
-      //     window.birdsongId = birdsongId;
-      //     this.setLogin(birdsongId);
-      //   } else {
-      //     // TODO retry?
-      //   }
-      // };
-      // xhr.send('idtoken=' + id_token);
+      var _this2 = this;
+
+      var id_token = googleUser.getAuthResponse().id_token;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/auth/google/callback');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function () {
+        if (xhr.status == 200) {
+          // login successful
+          var birdsongId = xhr.responseText;
+          console.log('Signed in as: ' + birdsongId);
+          // TODO decide what to actually do
+          window.birdsongId = birdsongId;
+          _this2.props.setLogin(birdsongId);
+        } else {
+          // TODO retry?
+        }
+      };
+      xhr.send('idtoken=' + id_token);
     }
   }, {
     key: 'renderGoogleLoginButton',
@@ -25524,7 +25529,6 @@ var LoginButton = function (_React$Component) {
         'height': 50,
         'longtitle': true,
         'theme': 'dark',
-        // 'onsuccess': ()=>alert('test')
         'onsuccess': this.onSignIn
       });
     }
@@ -25540,11 +25544,7 @@ var LoginButton = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement('div', { id: 'my-signin2' })
-      );
+      return _react2.default.createElement('div', { id: 'my-signin2' });
     }
   }]);
 
@@ -25649,10 +25649,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var LogoutButton = function (_React$Component) {
   _inherits(LogoutButton, _React$Component);
 
-  function LogoutButton() {
+  function LogoutButton(props) {
     _classCallCheck(this, LogoutButton);
 
-    return _possibleConstructorReturn(this, (LogoutButton.__proto__ || Object.getPrototypeOf(LogoutButton)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (LogoutButton.__proto__ || Object.getPrototypeOf(LogoutButton)).call(this, props));
+
+    _this.onSignOut = _this.onSignOut.bind(_this);
+    return _this;
   }
 
   _createClass(LogoutButton, [{
@@ -25662,7 +25665,7 @@ var LogoutButton = function (_React$Component) {
 
       // tell google, then the LoginControl component
       gapi.auth2.getAuthInstance().signOut().then(function () {
-        return _this2.unsetLogin();
+        return _this2.props.unsetLogin();
       });
       // tell the server
       var xhr = new XMLHttpRequest();
@@ -25672,7 +25675,7 @@ var LogoutButton = function (_React$Component) {
           // logout successful
           // TODO decide what to actually do
           window.birdsongId = null;
-          // this.setLogin();
+          // this.props.setLogin();
         } else {
             // TODO retry?
           }
