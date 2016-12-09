@@ -19,19 +19,22 @@ function findUserByIdString(useridString){
   });
 }
 
+// returns the _id of the user
 function findOrCreateGoogleUser(googleid) {
-  // TODO upsert with a partial index with unique constraints
-  // TODO look into error handling
-  return co(function*() {
+  return new Promise((resolve, reject) => {
     var col = db.collection('user');
-    var doc = yield col.findOne({ identity : {googleid : googleid} });
-    console.log("findUser..\n" + doc);
-    if (doc == null) {
-      doc = { identity: {googleid: googleid} };
-      var r = yield col.insertOne(doc);
-      console.log("user not found, inserted with _id " + doc._id);
-    }
-    return doc;
+    col.findOneAndUpdate({ identity : {googleid : googleid} },
+      { identity : {googleid : googleid} },
+      {upsert: true})
+      .then(doc => {
+        if (doc.ok != 1) {
+          reject("upsert failed");
+        } else if (doc.lastErrorObject.updatedExisting){
+          resolve(doc.value);
+        } else {
+          resolve(doc.lastErrorObject.upserted);
+        }
+      });
   });
 }
 

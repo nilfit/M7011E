@@ -22,10 +22,10 @@ router.post('/google/callback', (req, res) => {
     } else {
       // console.log(tokenInfo);
       db.findOrCreateGoogleUser(tokenInfo.sub)
-        .then(user => {
-          req.session.login = user._id;
+        .then(id => {
+          req.session.login = id;
           res.status(200);
-          res.send(user._id);
+          res.send(id);
           res.end();
         }).catch(err => res.status(500).end());
     }
