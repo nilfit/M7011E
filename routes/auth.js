@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-// var passport = require('passport');
-// var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var googleVerifier = require('google-id-token-verifier');
 var db = require('../db');
 var secrets = require('../secret/secrets')

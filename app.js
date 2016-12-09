@@ -1,12 +1,9 @@
 var express = require('express');
 var session = require('express-session');
-var subdomain = require('express-subdomain')
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-// var passport = require('passport');
 var secrets = require('./secret/secrets');
 
 var auth = require('./routes/auth');

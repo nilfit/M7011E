@@ -15,9 +15,6 @@ export default class LogoutButton extends React.Component {
     xhr.onload = () => {
       if (xhr.status == 200) {
         // logout successful
-        // TODO decide what to actually do
-        window.birdsongId = null;
-        // this.props.setLogin();
       } else {
         // TODO retry?
       }
