@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -12,7 +13,8 @@ var api = require('./routes/api');
 var app = express();
 
 function ensureAuthenticated(req, res, next) {
-  if (req.sess.login) {
+  var sess = req.session;
+  if (req.session.login) {
     return next(null);
   }
   res.status(401).end();
@@ -27,14 +29,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: secrets.sessionSecret,
                   resave: false,
                   saveUninitialized: false,
-                  // TODO use a different store
+                  store: new MongoDBStore({
+                    uri: 'mongodb://localhost:27017/bird',
+                    collection: 'session'
+                  }),
                   rolling: true,
                   cookie: {
                     maxAge: 900000 // 15 minutes
                   }
-                  }));
-// app.use(passport.initialize());
-// app.use(passport.session());
+                }));
 app.use('/auth', auth);
 app.use('/api', ensureAuthenticated, api);
 var db = require('./db.js');

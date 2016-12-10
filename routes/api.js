@@ -3,7 +3,7 @@ var router = express.Router();
 var co = require('co');
 var db = require('../db');
 
-router.get('/user/:id', function(req, res, next) {
+router.get('/user/:id', (req, res, next) => {
   var userid = req.params['id'];
   if (typeof userid === 'string') {
     co(function* (){
@@ -11,7 +11,42 @@ router.get('/user/:id', function(req, res, next) {
       res.json(doc);
     }).catch(function(err) {
       console.log(err.stack);
-    });;
+    });
+  }
+});
+
+router.get('/post/:postid', (req, res) => {
+  // TODO investigate if url parameters parsed by the router really need to be
+  // string checked (or are they always strings?)
+  var postid = req.params['postid'];
+  if (typeof postid === 'string') {
+    readStream = db.getPost(postid);
+    try {
+      // can fail with FileNotFound
+      readStream.on('error', (err) => {
+        // file not found
+        if (err.code === 'ENOENT') {
+          res.status(404).end();
+        } else {
+          res.status(500).end();
+        }
+      });
+      readStream.pipe(res);
+    } catch (err) {
+    }
+  } else {
+    // generic server error
+    res.status(500).end();
+  }
+});
+
+router.get('/post/:postid/meta', (req, res) => {
+  var postid = req.params['postid'];
+  if (typeof postid === 'string') {
+    db.getPostMeta(postid).then(doc => res.json(doc));
+  } else {
+    // generic server error
+    res.status(500).end();
   }
 });
 
