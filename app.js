@@ -12,7 +12,8 @@ var api = require('./routes/api');
 var app = express();
 
 function ensureAuthenticated(req, res, next) {
-  if (req.sess.login) {
+  var sess = req.session;
+  if (req.session.login) {
     return next(null);
   }
   res.status(401).end();
