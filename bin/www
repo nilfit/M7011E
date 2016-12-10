@@ -13,29 +13,31 @@ var https = require('https');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
+var portHttp = normalizePort(process.env.PORT || '3000');
+var portHttps = normalizePort(process.env.PORTHTTPS || '3001');
 /**
- * Create HTTP server.
+ * Create HTTP or HTTPS server, depending on environment.
  */
 var server;
 if (app.get('env') === 'production') {
+  app.set('port', portHttps);
   var options = require('../secret/tls-options.js');
   server = https.createServer(options, app);
-  console.log('https only');
+  server.listen(portHttps);
+  server.on('error', (err) => onError(err, portHttps));
+  // a http server that just redirects users to https
+  var httpToHttps = require('express')()
+    .use((req, res) => res.redirect(['https://', req.get('Host'), req.url].join('')));
+  httpToHttps.listen(portHttp);
+  httpToHttps.on('error', (err) => onError(err, portHttp));
+  httpToHttps.on('listening', () => onListening(httpToHttps));
 } else {
+  app.set('port', portHttp);
   server = http.createServer(app);
-  console.log('http only');
+  server.listen(portHttp);
+  server.on('error', (err) => onError(err, portHttp));
 }
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.on('listening', () => onListening(server));
 
 /**
  * Normalize a port into a number, string, or false.
@@ -61,7 +63,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError(error, port) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -89,7 +91,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening(server) {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
