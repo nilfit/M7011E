@@ -17,8 +17,6 @@ export default class LoginButton extends React.Component {
         // login successful
         var birdsongId = xhr.responseText;
         console.log('Signed in as: ' + birdsongId);
-        // TODO decide what to actually do
-        window.birdsongId = birdsongId;
         this.props.setLogin(birdsongId);
       } else {
         // TODO retry?
