@@ -39,9 +39,19 @@ function findOrCreateGoogleUser(googleid) {
 }
 
 // returns a promise that resolves to the ObjectID of the inserted file.
-function insertPost(useridString, file) {
-  // TODO
-}
+function insertPost(userid, tags, audiostream) {
+  return new Promise((resolve, reject) => {
+    var userid = ObjectID.createFromHexString(useridString);
+    var options = {metadata: metadata, contentType: 'audio/wav'};
+    var uploadStream = bucket.openUploadStream('post.wav', options);
+    uploadStream.once('finish', () => {
+      console.log("file upload done");
+      resolve(uploadStream.id);
+    }).on('error', (err) => {
+      reject(err);
+    });
+    audiostream.pipe(uploadStream);
+  });
 
 // returns a readStream of the file
 // TODO add support for range requests, returning only the requested chunks

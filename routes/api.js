@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var co = require('co');
 var db = require('../db');
+var streamifier = require('streamifier');
 
 router.get('/user/:id', (req, res, next) => {
   var userid = req.params['id'];
@@ -47,6 +48,23 @@ router.get('/post/:postid/meta', (req, res) => {
   } else {
     // generic server error
     res.status(500).end();
+  }
+});
+
+router.post('/post', (req, res) => {
+  // userid has been checked and is valid if this route handler was invoked
+  var userid = req.session.login;
+  var tags = req.body.tags;
+  var audiobase64 = req.body.audio;
+  if(tags && audiobase64) {
+    var audio = Buffer.from(audiobase64, 'base64');
+    var audiostream = streamifier.createReadStream(audio);
+    db.insertPost(userid, tags, audiostream).then(() => {
+      res.status(200).end();
+    });
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
   }
 });
 
