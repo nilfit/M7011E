@@ -3,6 +3,7 @@ var router = express.Router();
 var co = require('co');
 var db = require('../db');
 var streamifier = require('streamifier');
+var dataUri = require('strong-data-uri')
 
 router.get('/user/:id', (req, res, next) => {
   var userid = req.params['id'];
@@ -32,6 +33,7 @@ router.get('/post/:postid', (req, res) => {
           res.status(500).end();
         }
       });
+      res.type('audio/wav')
       readStream.pipe(res);
     } catch (err) {
     }
@@ -55,9 +57,12 @@ router.post('/post', (req, res) => {
   // userid has been checked and is valid if this route handler was invoked
   var userid = req.session.login;
   var tags = req.body.tags;
-  var audiobase64 = req.body.audio;
-  if(tags && audiobase64) {
-    var audio = Buffer.from(audiobase64, 'base64');
+  var audioUri = req.body.audio;
+  if(tags && audioUri) {
+    var audio = dataUri.decode(audioUri);
+    if (audio.mimetype !== 'audio/wav') {
+      throw 'wrong mime type';
+    }
     var audiostream = streamifier.createReadStream(audio);
     db.insertPost(userid, tags, audiostream).then(() => {
       res.status(200).end();

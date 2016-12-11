@@ -30,7 +30,7 @@ function findOrCreateGoogleUser(googleid) {
         if (doc.ok != 1) {
           reject("upsert failed");
         } else if (doc.lastErrorObject.updatedExisting){
-          resolve(doc.value);
+          resolve(doc.value._id);
         } else {
           resolve(doc.lastErrorObject.upserted);
         }
@@ -41,8 +41,9 @@ function findOrCreateGoogleUser(googleid) {
 // returns a promise that resolves to the ObjectID of the inserted file.
 function insertPost(userid, tags, audiostream) {
   return new Promise((resolve, reject) => {
-    var userid = ObjectID.createFromHexString(useridString);
+    var metadata = {userid: userid, tags: tags};
     var options = {metadata: metadata, contentType: 'audio/wav'};
+    var bucket = new mongodb.GridFSBucket(db, { bucketName: "post"});
     var uploadStream = bucket.openUploadStream('post.wav', options);
     uploadStream.once('finish', () => {
       console.log("file upload done");
@@ -52,6 +53,7 @@ function insertPost(userid, tags, audiostream) {
     });
     audiostream.pipe(uploadStream);
   });
+}
 
 // returns a readStream of the file
 // TODO add support for range requests, returning only the requested chunks
@@ -60,7 +62,6 @@ function getPost(fileidString) {
   var bucket = new mongodb.GridFSBucket(db, { bucketName: "post"});
   var fileid = ObjectID.createFromHexString(fileidString);
   var downloadStream = bucket.openDownloadStream(fileid);
-  console.log('after opening stream');
   return downloadStream;
 }
 
@@ -77,9 +78,11 @@ function getPostMeta(fileidString, file) {
     var fields = {contentType:1, uploadDate:1, metadata:1};
     col.findOne({_id: fileid}, {fields: fields}).then(doc => {
       resolve({
+        postid: fileid,
         contentType: doc.contentType,
         uploadDate: doc.uploadDate,
-        userid: doc.metadata.userid
+        userid: doc.metadata.userid,
+        tags: doc.metadata.tags
       });
     }).catch(err => reject(err));
   });

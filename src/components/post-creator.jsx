@@ -9,33 +9,32 @@ export default class PostCreator extends React.Component {
       value: '',
       tags: []
     };
-    
+
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.setAudioBlob = this.setAudioBlob.bind(this);
   }
-  
+
   setAudioBlob(blob){
     this.setState({audioblob: blob});
     //console.log(blob);
   }
-  
+
   //Submit the post request
   handleClick(event){
     event.preventDefault();
     var reader = new window.FileReader();
-    
-    reader.readAsDataURL(this.state.audioblob); 
+
+    reader.readAsDataURL(this.state.audioblob);
     reader.onloadend = () => {
       var base64data = reader.result;
-      
-      var json = 
-      {
+
+      var json = JSON.stringify({
         "audio": base64data,
         "tags": this.state.tags
-      }
-      console.log(json);
-      
+      });
+      // console.log(json);
+
       //AJAX POST REQUEST HERE
       $.ajax({
         method: "POST",
@@ -48,7 +47,7 @@ export default class PostCreator extends React.Component {
       });
     };
   }
-  
+
   handleChange(event){
     this.setState(
       {
@@ -57,7 +56,7 @@ export default class PostCreator extends React.Component {
       }
     );
   }
-  
+
   render() {
     return (
       <div>
