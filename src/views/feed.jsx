@@ -1,5 +1,6 @@
 import React from 'react';
 import Post from '../components/post.jsx';
+import PostCreator from '../components/post-creator.jsx';
 
 export default class Feed extends React.Component {
   
@@ -14,7 +15,7 @@ export default class Feed extends React.Component {
   
   componentDidMount() {
     //Do some stuff here with the api
-    
+
   }
   
   handleClick(event){
@@ -24,11 +25,15 @@ export default class Feed extends React.Component {
   
   render() {
     return (
-      <div className="feed">
-        <Post name="birdboy94" audio="./marmot" img="./bird.png"/>
-        <Post name="someDude" audio="./liketwitter" img="./face.png"/>
-        <Post name="birdboy94" audio="./marmot" img="./bird.png"/>
-        <input type="button" value="Load More" onClick={this.handleClick}/>
+      <div>
+        <PostCreator/>
+        <h2>Feed</h2>
+        <div className="feed">
+          <Post name="birdboy94" audio="./marmot" img="./bird.png"/>
+          <Post name="someDude" audio="./liketwitter" img="./face.png"/>
+          <Post name="birdboy94" audio="./marmot" img="./bird.png"/>
+          <input type="button" value="Load More" onClick={this.handleClick}/>
+        </div>
       </div>
     );
   }

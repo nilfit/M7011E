@@ -1,0 +1,68 @@
+import React from 'react';
+import AudioRecorder from '../components/audio-recorder.jsx';
+
+export default class PostCreator extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      audioblob: null,
+      likes: 0,
+      value: ''
+    };
+    
+    this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.setAudioBlob = this.setAudioBlob.bind(this);
+  }
+  
+  setAudioBlob(blob){
+    this.setState({audioblob: blob});
+    //console.log(blob);
+  }
+  
+  //Submit the post request
+  handleClick(event){
+    event.preventDefault();
+    var reader = new window.FileReader();
+    
+    reader.readAsDataURL(this.state.audioblob); 
+    reader.onloadend = () => {
+      var base64data = reader.result;
+      
+      var json = 
+      {
+        "audio": base64data,
+        "likes": 0,
+        "tags": this.state.value
+      }
+      console.log(json);
+      
+      //AJAX POST REQUEST HERE
+      /*
+      $.ajax({
+        method: "POST",
+        url: "/api/post",
+        contentType: 'application/json',
+        data: json,
+        success: function( resp) {
+          alert("success");
+        }
+      });
+      */
+    };
+  }
+  
+  handleChange(event){
+    this.setState({value: event.target.value});
+  }
+  
+  render() {
+    return (
+      <div>
+        <AudioRecorder setAudioBlob={this.setAudioBlob}/>
+        Tags: <input type="text" value={this.state.value} onChange={this.handleChange}/>
+        <button onClick={this.handleClick}>Chirp</button>
+      </div>
+    );
+  }
+}
