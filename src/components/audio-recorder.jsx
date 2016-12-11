@@ -35,19 +35,16 @@ export default class AudioRecorder extends React.Component {
     // create WAV download link using audio data blob
     this.createDownloadLink();
     
+    //Broken because of a bug.
     //this.recorder.clear();
   }
   
   createDownloadLink() {
-    this.recorder && this.recorder.exportWAV(function(blob) {
+    this.recorder && this.recorder.exportWAV((blob) => {
+      this.props.setAudioBlob(blob);
       var url = URL.createObjectURL(blob);
-      var li = document.createElement('li');
-      var au = document.createElement('audio');
-      
-      au.controls = true;
+      var au = document.getElementById("recording");
       au.src = url;
-      li.appendChild(au);
-      recordingslist.appendChild(li);
     });
   }
   
@@ -73,11 +70,9 @@ export default class AudioRecorder extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.startRecording}>record</button>
-        <button onClick={this.stopRecording}>stop</button>
-        
-        <h2>Recordings</h2>
-        <ul id="recordingslist"></ul>
+        <audio id="recording" controls="controls"></audio>
+        <button onClick={this.startRecording}>Record</button>
+        <button onClick={this.stopRecording}>Stop</button>
       </div>
     );
   }

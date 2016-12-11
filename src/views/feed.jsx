@@ -1,6 +1,6 @@
 import React from 'react';
 import Post from '../components/post.jsx';
-import AudioRecorder from '../components/audiorecorder.jsx';
+import PostCreator from '../components/post-creator.jsx';
 
 export default class Feed extends React.Component {
   
@@ -15,7 +15,7 @@ export default class Feed extends React.Component {
   
   componentDidMount() {
     //Do some stuff here with the api
-    
+
   }
   
   handleClick(event){
@@ -26,7 +26,7 @@ export default class Feed extends React.Component {
   render() {
     return (
       <div>
-        <AudioRecorder/>
+        <PostCreator/>
         <h2>Feed</h2>
         <div className="feed">
           <Post name="birdboy94" audio="./marmot" img="./bird.png"/>
