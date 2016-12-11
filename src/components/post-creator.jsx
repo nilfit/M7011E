@@ -35,7 +35,7 @@ export default class PostCreator extends React.Component {
         "likes": 0,
         "tags": this.state.value
       }
-      //console.log(JSON.stringify(json));
+      console.log(json);
       
       //AJAX POST REQUEST HERE
       /*
