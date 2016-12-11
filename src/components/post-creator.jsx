@@ -6,8 +6,8 @@ export default class PostCreator extends React.Component {
     super();
     this.state = {
       audioblob: null,
-      likes: 0,
-      value: ''
+      value: '',
+      tags: []
     };
     
     this.handleClick = this.handleClick.bind(this);
@@ -32,13 +32,11 @@ export default class PostCreator extends React.Component {
       var json = 
       {
         "audio": base64data,
-        "likes": 0,
-        "tags": this.state.value
+        "tags": this.state.tags
       }
       console.log(json);
       
       //AJAX POST REQUEST HERE
-      /*
       $.ajax({
         method: "POST",
         url: "/api/post",
@@ -48,12 +46,16 @@ export default class PostCreator extends React.Component {
           alert("success");
         }
       });
-      */
     };
   }
   
   handleChange(event){
-    this.setState({value: event.target.value});
+    this.setState(
+      {
+        value: event.target.value,
+        tags: event.target.value.split(" ")
+      }
+    );
   }
   
   render() {
