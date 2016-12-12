@@ -88,8 +88,38 @@ function getPostMeta(fileidString, file) {
   });
 }
 
+function getPostMetaFields(doc) {
+  return {
+    postid: doc._id,
+    contentType: doc.contentType,
+    uploadDate: doc.uploadDate,
+    userid: doc.metadata.userid,
+    tags: doc.metadata.tags
+  }
+}
+
+function getFeed(pageNum, pageSize) {
+  return new Promise((resolve, reject) => {
+    var feed = [];
+    var col = db.collection('post.files');
+    col.find().sort({uploadDate: -1})
+      .skip(pageNum * pageSize)
+      .limit(pageSize)
+      .toArray()
+      .then(docs => resolve(docs.map(getPostMetaFields)))
+      .catch(err => reject(err));
+      // .each(doc => {
+      //   if(doc) {
+      //     var meta = getPostMetaFields(doc);
+      //     feed.push(meta);
+      //   }
+      // });
+  });
+}
+
 exports.findUserByIdString = findUserByIdString;
 exports.findOrCreateGoogleUser = findOrCreateGoogleUser;
 exports.insertPost = insertPost;
 exports.getPost = getPost;
 exports.getPostMeta = getPostMeta;
+exports.getFeed = getFeed;
