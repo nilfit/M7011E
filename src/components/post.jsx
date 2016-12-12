@@ -6,10 +6,8 @@ export default class Post extends React.Component {
     super(props);
     this.audioType = this.props.postInfo.contentType;
     this.audioUrl = "api/post/"+this.props.postInfo.postid;
-    //this.pic = this.propspostInfo.pic;
-    //this.name = this.propspostInfo.name;
-    this.pic = "./bird.png";
-    this.name = "birdboy";
+    this.pic = this.props.postInfo.picture;
+    this.name = this.props.postInfo.name;
     this.tags = this.props.postInfo.tags;
     this.date = this.props.postInfo.uploadDate;
   }

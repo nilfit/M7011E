@@ -16,7 +16,7 @@ export default class Feed extends React.Component {
     //Fetch the first 10 posts
     $.ajax({
       method: "GET",
-      url: "/api/feed/0", //change to feed/
+      url: "/api/feed/",
       success: (resp) => {
         this.setState((prevState) => ({
           posts: prevState.posts.concat(resp),

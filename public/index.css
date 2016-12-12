@@ -91,14 +91,6 @@ body {
   text-decoration: none;
 }
 
-.post_user {
-  border: 1px solid blue;
-}
-
-.post_data {
-  border: 1px solid blue;
-}
-
 .post_img {
   border: 2px solid lightblue;
   border-radius: 50%;
