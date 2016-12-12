@@ -25,6 +25,7 @@ ReactDOM.render(
     <Route path="/" component={Main}>
       <IndexRoute component={Home}/>
       <Route path="/feed" component={Feed}/>
+      <Route path="/feed/:tag" component={Feed}/>
       <Route path="/about" component={About}/>
       <Route path="/profile/:userID" component={ProfileWrapper}/>
     </Route>

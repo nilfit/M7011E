@@ -25947,7 +25947,7 @@ var Post = function (_React$Component) {
         { className: 'post' },
         _react2.default.createElement(
           'ul',
-          null,
+          { className: 'post_user' },
           _react2.default.createElement(
             'li',
             null,
@@ -25958,14 +25958,14 @@ var Post = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouter.Link,
-              { to: '/profile' },
+              { to: '/profile/1' },
               this.name
             )
           )
         ),
         _react2.default.createElement(
           'ul',
-          null,
+          { className: 'post_data' },
           _react2.default.createElement(
             'li',
             null,
@@ -25984,7 +25984,7 @@ var Post = function (_React$Component) {
           _react2.default.createElement(
             'li',
             null,
-            this.tags.toString()
+            _react2.default.createElement(TagList, { tags: this.tags })
           )
         )
       );
@@ -26015,7 +26015,11 @@ var TagList = function (_React$Component2) {
           return _react2.default.createElement(
             'li',
             { key: item },
-            item
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: "/feed/" + item },
+              item + ", "
+            )
           );
         })
       );
@@ -26104,6 +26108,7 @@ _reactDom2.default.render(_react2.default.createElement(
     { path: '/', component: Main },
     _react2.default.createElement(_reactRouter.IndexRoute, { component: _home2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/feed', component: _feed2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/feed/:tag', component: _feed2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userID', component: _profile2.default })
   )
@@ -26342,49 +26347,78 @@ var Feed = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Feed.__proto__ || Object.getPrototypeOf(Feed)).call(this));
 
+    _this.requestUrl = "/api/feed/";
     _this.state = {
-      posts: [],
-      pageNumber: 0
+      posts: []
     };
     _this.handleClick = _this.handleClick.bind(_this);
+    _this.updateUrl = _this.updateUrl.bind(_this);
     return _this;
   }
 
   _createClass(Feed, [{
+    key: 'updateUrl',
+    value: function updateUrl(tag) {
+      //If the tag param is undefined (not set), we get the global feed, else the tag specific feed
+      if (typeof tag != 'undefined') {
+        this.requestUrl = "/api/tag/" + tag;
+      } else {
+        this.requestUrl = "/api/feed";
+      }
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var _this2 = this;
 
+      this.updateUrl(this.props.params.tag);
       //Fetch the first 10 posts
       $.ajax({
         method: "GET",
-        url: "/api/feed/",
+        url: this.requestUrl,
         success: function success(resp) {
           _this2.setState(function (prevState) {
             return {
-              posts: prevState.posts.concat(resp),
-              pageNumber: prevState.pageNumber + 1
+              posts: prevState.posts.concat(resp)
             };
           });
         }
       });
     }
   }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      var _this3 = this;
+
+      if (nextProps.params.tag != this.props.params.tag) {
+        //Component received new props. Empty the post list get the new posts
+        this.updateUrl(nextProps.params.tag);
+        $.ajax({
+          method: "GET",
+          url: this.requestUrl,
+          success: function success(resp) {
+            _this3.setState({
+              posts: resp
+            });
+          }
+        });
+      }
+    }
+  }, {
     key: 'handleClick',
     value: function handleClick(event) {
-      var _this3 = this;
+      var _this4 = this;
 
       event.preventDefault();
       //Fetch another 10 posts
       var lastUploadDate = this.state.posts[this.state.posts.length - 1].uploadDate;
       $.ajax({
         method: "GET",
-        url: "/api/feed/" + lastUploadDate,
+        url: this.requestUrl + "/" + lastUploadDate,
         success: function success(resp) {
-          _this3.setState(function (prevState) {
+          _this4.setState(function (prevState) {
             return {
-              posts: prevState.posts.concat(resp),
-              pageNumber: prevState.pageNumber + 1
+              posts: prevState.posts.concat(resp)
             };
           });
         }

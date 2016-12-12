@@ -5,25 +5,51 @@ import PostCreator from '../components/post-creator.jsx';
 export default class Feed extends React.Component {
   constructor() {
     super();
+    this.requestUrl = "/api/feed/";
     this.state = {
       posts:[],
-      pageNumber: 0
     };
     this.handleClick = this.handleClick.bind(this);
+    this.updateUrl = this.updateUrl.bind(this);
+  }
+  
+  updateUrl(tag){
+    //If the tag param is undefined (not set), we get the global feed, else the tag specific feed
+    if (typeof tag != 'undefined'){
+      this.requestUrl = "/api/tag/"+tag;
+    }else{
+      this.requestUrl = "/api/feed";
+    }
   }
   
   componentDidMount() {
+    this.updateUrl(this.props.params.tag);
     //Fetch the first 10 posts
     $.ajax({
       method: "GET",
-      url: "/api/feed/",
+      url: this.requestUrl,
       success: (resp) => {
         this.setState((prevState) => ({
           posts: prevState.posts.concat(resp),
-          pageNumber: prevState.pageNumber + 1
         }));
       }
     });
+  }
+  
+  componentWillReceiveProps(nextProps){
+    if (nextProps.params.tag != this.props.params.tag){
+      //Component received new props. Empty the post list get the new posts
+      this.updateUrl(nextProps.params.tag);
+      $.ajax({
+        method: "GET",
+        url: this.requestUrl,
+        success: (resp) => {
+          this.setState({
+            posts: resp
+          });
+        }
+      });
+    }
   }
   
   handleClick(event){
@@ -32,11 +58,10 @@ export default class Feed extends React.Component {
     var lastUploadDate = this.state.posts[this.state.posts.length-1].uploadDate;
     $.ajax({
       method: "GET",
-      url: "/api/feed/"+lastUploadDate,
+      url: this.requestUrl+"/"+lastUploadDate,
       success: (resp) => {
         this.setState((prevState) => ({
           posts: prevState.posts.concat(resp),
-          pageNumber: prevState.pageNumber + 1
         }));
       }
     });

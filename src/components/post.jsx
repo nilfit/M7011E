@@ -15,11 +15,11 @@ export default class Post extends React.Component {
   render() {
     return (
       <div className="post">
-        <ul>
+        <ul className="post_user">
           <li><img src={this.pic} height="60" width="60" alt="profile picture" className="post_img"/></li>
-          <li><Link to="/profile">{this.name}</Link></li>
+          <li><Link to="/profile/1">{this.name}</Link></li>
         </ul>
-        <ul>
+        <ul className="post_data">
           <li>
             <audio controls>
               <source src={this.audioUrl} type={this.audioType}/>
@@ -27,8 +27,7 @@ export default class Post extends React.Component {
             </audio>
           </li>
           <li>{this.date}</li>
-          <li>{this.tags.toString()}</li>
-          {/*<li><TagList tags={this.tags}/></li>*/}
+          <li><TagList tags={this.tags}/></li>
         </ul>
       </div>
     );
@@ -40,7 +39,7 @@ class TagList extends React.Component {
     return (
       <ul className="tagList">
         {this.props.tags.map(item => (
-          <li key={item}>{item}</li>
+          <li key={item}><Link to={"/feed/"+item}>{item+", "}</Link></li>
         ))}
       </ul>
     );
