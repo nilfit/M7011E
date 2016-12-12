@@ -17,7 +17,6 @@ export default class PostCreator extends React.Component {
 
   setAudioBlob(blob){
     this.setState({audioblob: blob});
-    //console.log(blob);
   }
 
   //Submit the post request
@@ -33,7 +32,6 @@ export default class PostCreator extends React.Component {
         "audio": base64data,
         "tags": this.state.tags
       });
-      // console.log(json);
 
       //AJAX POST REQUEST HERE
       $.ajax({
@@ -42,7 +40,7 @@ export default class PostCreator extends React.Component {
         contentType: 'application/json',
         data: json,
         success: function( resp) {
-          alert("success");
+          //alert("success");
         }
       });
     };

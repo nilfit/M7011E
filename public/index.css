@@ -10,6 +10,7 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 1;
 }
 
 .menu ul  {
@@ -63,8 +64,12 @@ body {
   margin: 70px 15% 50px 15%;
 }
 
-/* CSS for the post component */
+/* CSS for the feed component */
+.feed ul{
+  list-style-type: none;
+}
 
+/* CSS for the post component */
 .post {
   border-style: solid;
   border-width: 1px;
