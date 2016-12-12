@@ -19,7 +19,7 @@ router.post('/google/callback', (req, res) => {
       res.status(401).end();
     } else {
       // console.log(tokenInfo);
-      db.findOrCreateGoogleUser(tokenInfo.sub)
+      db.findOrCreateGoogleUser(tokenInfo.sub, tokenInfo.name, tokenInfo.picture)
         .then(id => {
           req.session.login = id;
           res.status(200);

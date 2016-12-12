@@ -20,11 +20,12 @@ function findUserByIdString(useridString){
 }
 
 // returns the _id of the user
-function findOrCreateGoogleUser(googleid) {
+function findOrCreateGoogleUser(googleid, name, picture) {
   return new Promise((resolve, reject) => {
     var col = db.collection('user');
     col.findOneAndUpdate({ identity : {googleid : googleid} },
-      { $setOnInsert: {identity : {googleid : googleid}} },
+      { $set: {name: name, picture: picture},
+      $setOnInsert: {identity : {googleid : googleid}} },
       {upsert: true})
       .then(doc => {
         if (doc.ok != 1) {
@@ -89,31 +90,48 @@ function getPostMeta(fileidString, file) {
 }
 
 function getPostMetaFields(doc) {
-  return {
-    postid: doc._id,
-    contentType: doc.contentType,
-    uploadDate: doc.uploadDate,
-    userid: doc.metadata.userid,
-    tags: doc.metadata.tags
-  }
+  return new Promise(function(resolve, reject) {
+    var meta = {
+      postid: doc._id,
+      contentType: doc.contentType,
+      uploadDate: doc.uploadDate,
+      userid: doc.metadata.userid,
+      tags: doc.metadata.tags
+    };
+    var col = db.collection('user');
+    col.findOne({_id: doc.metadata.userid}).then(user => {
+      meta.name = user.name;
+      meta.picture = user.picture;
+      resolve(meta);
+    }).catch(err => reject(err));
+  });
 }
 
-function getFeed(pageNum, pageSize) {
+function getFeedBeforeDate(date, pageSize) {
   return new Promise((resolve, reject) => {
     var feed = [];
     var col = db.collection('post.files');
-    col.find().sort({uploadDate: -1})
-      .skip(pageNum * pageSize)
+    col.find({uploadDate: {'$lt': date}}).sort({uploadDate: -1})
       .limit(pageSize)
       .toArray()
-      .then(docs => resolve(docs.map(getPostMetaFields)))
-      .catch(err => reject(err));
-      // .each(doc => {
-      //   if(doc) {
-      //     var meta = getPostMetaFields(doc);
-      //     feed.push(meta);
-      //   }
-      // });
+      .then(docs => {
+        Promise.all(docs.map(getPostMetaFields))
+          .then(docsWithMeta => resolve(docsWithMeta));
+      }).catch(err => reject(err));
+  });
+}
+
+function getTagFeedBeforeDate(tag, date, pageSize) {
+  return new Promise((resolve, reject) => {
+    var feed = [];
+    var col = db.collection('post.files');
+    col.find({uploadDate: {'$lt': date}, 'metadata.tags': tag}).sort({uploadDate: -1})
+      .limit(pageSize)
+      .toArray()
+      .then(docs => {
+        Promise.all(docs.map(getPostMetaFields))
+          .then(docsWithMeta => resolve(docsWithMeta));
+      }).catch(err => reject(err));
   });
 }
 
@@ -122,4 +140,5 @@ exports.findOrCreateGoogleUser = findOrCreateGoogleUser;
 exports.insertPost = insertPost;
 exports.getPost = getPost;
 exports.getPostMeta = getPostMeta;
-exports.getFeed = getFeed;
+exports.getFeedBeforeDate = getFeedBeforeDate;
+exports.getTagFeedBeforeDate = getTagFeedBeforeDate;
