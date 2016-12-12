@@ -59,6 +59,8 @@ router.post('/post', (req, res) => {
   var tags = req.body.tags;
   var audioUri = req.body.audio;
   if(tags && audioUri) {
+    // ensure each tag occurs only once by converting to a set and back
+    tags = Array.from(new Set(tags));
     var audio = dataUri.decode(audioUri);
     if (audio.mimetype !== 'audio/wav') {
       throw 'wrong mime type';
