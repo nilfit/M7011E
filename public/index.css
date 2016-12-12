@@ -63,12 +63,6 @@ body {
   margin: 70px 15% 50px 15%;
 }
 
-/* CSS for the feed */
-.feed {
-  width: 500px;
-  height: 110px;
-}
-
 /* CSS for the post component */
 
 .post {
@@ -77,9 +71,10 @@ body {
   border-radius: 10px;
   padding: 5px;
   margin-bottom: 30px;
-  height: 100%;
+  height: 110px;
   width: 100%;
   color: gray;
+  overflow: hidden;
 }
 
 .post ul {

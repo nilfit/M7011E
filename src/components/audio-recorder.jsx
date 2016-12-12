@@ -26,11 +26,16 @@ export default class AudioRecorder extends React.Component {
   startRecording() {
     this.recorder && this.recorder.record();
     console.log('Recording...');
+    document.getElementById("startButton").disabled = true;
+    document.getElementById("stopButton").disabled = false;
   }
   
   stopRecording() {
     this.recorder && this.recorder.stop();
     console.log('Stopped recording.');
+    
+    document.getElementById("startButton").disabled = false;
+    document.getElementById("stopButton").disabled = true;
     
     // create WAV download link using audio data blob
     this.createDownloadLink();
@@ -71,8 +76,8 @@ export default class AudioRecorder extends React.Component {
     return (
       <div>
         <audio id="recording" controls="controls"></audio>
-        <button onClick={this.startRecording}>Record</button>
-        <button onClick={this.stopRecording}>Stop</button>
+        <button id="startButton" onClick={this.startRecording}>Record</button>
+        <button id="stopButton" onClick={this.stopRecording}>Stop</button>
       </div>
     );
   }
