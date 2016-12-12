@@ -38,8 +38,8 @@ router.get('/post/:postid', (req, res) => {
     } catch (err) {
     }
   } else {
-    // generic server error
-    res.status(500).end();
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
   }
 });
 
@@ -48,8 +48,8 @@ router.get('/post/:postid/meta', (req, res) => {
   if (typeof postid === 'string') {
     db.getPostMeta(postid).then(doc => res.json(doc));
   } else {
-    // generic server error
-    res.status(500).end();
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
   }
 });
 
@@ -67,6 +67,17 @@ router.post('/post', (req, res) => {
     db.insertPost(userid, tags, audiostream).then(() => {
       res.status(200).end();
     });
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+router.get('/feed/:pageNum', (req, res) => {
+  var pageNum = req.params['pageNum'];
+  if (typeof pageNum === 'string') {
+    var pageSize = 10;
+    db.getFeed(pageNum, pageSize).then(feed => res.json(feed));
   } else {
     // The request cannot be fulfilled due to bad syntax.
     res.status(400).end();
