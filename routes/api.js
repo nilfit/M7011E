@@ -73,30 +73,51 @@ router.post('/post', (req, res) => {
   }
 });
 
-router.get('/feed/:pageNum', (req, res) => {
-  var pageNum = req.params['pageNum'];
-  if (typeof pageNum === 'string') {
+router.get('/feed/:beforeDate', (req, res) => {
+  var beforeDate = req.params['beforeDate'];
+  if (typeof beforeDate === 'string') {
+    var date = new Date(beforeDate);
     var pageSize = 10;
-    db.getFeed(pageNum, pageSize).then(feed => res.json(feed));
+    db.getFeedBeforeDate(date, pageSize).then(feed => res.json(feed));
   } else {
     // The request cannot be fulfilled due to bad syntax.
     res.status(400).end();
   }
 });
 
+router.get('/feed', (req, res) => {
+  var date = new Date();
+  var pageSize = 10;
+  db.getFeedBeforeDate(date, pageSize).then(feed => res.json(feed));
+});
+
+router.get('/tag/:tag/:beforeDate', (req, res) => {
+  var beforeDate = req.params['beforeDate'];
+  var tag = req.params['tag'];
+  if (typeof beforeDate === 'string' && typeof tag === 'string') {
+    var date = new Date(beforeDate);
+    var pageSize = 10;
+    db.getTagFeedBeforeDate(tag, date, pageSize).then(feed => res.json(feed));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+router.get('/tag/:tag', (req, res) => {
+  var tag = req.params['tag'];
+  if (typeof tag === 'string') {
+    var date = new Date();
+    var pageSize = 10;
+    db.getTagFeedBeforeDate(tag, date, pageSize).then(feed => res.json(feed));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+
 // router.get('/profile/:username', function(req, res, next) {
-//   var username = req.params['username'];
-//   if (typeof username === 'string') {
-//     MongoClient.connect(dburl, function(err, db) {
-//       var collection = db.collection('users');
-//       collection.find({username : username}).each(function(err, doc) {
-//         db.close();
-//         res.json(doc);
-//         // terminate the each
-//         return false;
-//       });
-//     });
-//   }
-// });
+
 
 module.exports = router;
