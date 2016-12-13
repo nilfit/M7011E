@@ -39,8 +39,8 @@ export default class PostCreator extends React.Component {
         url: "/api/post",
         contentType: 'application/json',
         data: json,
-        success: function( resp) {
-          //alert("success");
+        success: (resp) => {
+          this.props.getFeed();
         }
       });
     };

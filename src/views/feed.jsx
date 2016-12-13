@@ -11,6 +11,7 @@ export default class Feed extends React.Component {
     };
     this.handleClick = this.handleClick.bind(this);
     this.updateUrl = this.updateUrl.bind(this);
+    this.getFeed = this.getFeed.bind(this);
   }
   
   updateUrl(tag){
@@ -20,6 +21,19 @@ export default class Feed extends React.Component {
     }else{
       this.requestUrl = "/api/feed";
     }
+  }
+  
+  
+  getFeed() {
+    $.ajax({
+      method: "GET",
+      url: this.requestUrl,
+      success: (resp) => {
+        this.setState({
+          posts: resp
+        });
+      }
+    });
   }
   
   componentDidMount() {
@@ -70,7 +84,7 @@ export default class Feed extends React.Component {
   render() {
     return (
       <div>
-        <PostCreator/>
+        <PostCreator getFeed={this.getFeed}/>
         <h2>Feed</h2>
         <div className="feed">
           <FeedList posts={this.state.posts}/>

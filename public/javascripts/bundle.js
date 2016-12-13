@@ -25863,7 +25863,7 @@ var PostCreator = function (_React$Component) {
           contentType: 'application/json',
           data: json,
           success: function success(resp) {
-            //alert("success");
+            _this2.props.getFeed();
           }
         });
       };
@@ -26353,6 +26353,7 @@ var Feed = function (_React$Component) {
     };
     _this.handleClick = _this.handleClick.bind(_this);
     _this.updateUrl = _this.updateUrl.bind(_this);
+    _this.getFeed = _this.getFeed.bind(_this);
     return _this;
   }
 
@@ -26367,9 +26368,24 @@ var Feed = function (_React$Component) {
       }
     }
   }, {
+    key: 'getFeed',
+    value: function getFeed() {
+      var _this2 = this;
+
+      $.ajax({
+        method: "GET",
+        url: this.requestUrl,
+        success: function success(resp) {
+          _this2.setState({
+            posts: resp
+          });
+        }
+      });
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.updateUrl(this.props.params.tag);
       //Fetch the first 10 posts
@@ -26377,7 +26393,7 @@ var Feed = function (_React$Component) {
         method: "GET",
         url: this.requestUrl,
         success: function success(resp) {
-          _this2.setState(function (prevState) {
+          _this3.setState(function (prevState) {
             return {
               posts: prevState.posts.concat(resp)
             };
@@ -26388,7 +26404,7 @@ var Feed = function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (nextProps.params.tag != this.props.params.tag) {
         //Component received new props. Empty the post list get the new posts
@@ -26397,7 +26413,7 @@ var Feed = function (_React$Component) {
           method: "GET",
           url: this.requestUrl,
           success: function success(resp) {
-            _this3.setState({
+            _this4.setState({
               posts: resp
             });
           }
@@ -26407,7 +26423,7 @@ var Feed = function (_React$Component) {
   }, {
     key: 'handleClick',
     value: function handleClick(event) {
-      var _this4 = this;
+      var _this5 = this;
 
       event.preventDefault();
       //Fetch another 10 posts
@@ -26416,7 +26432,7 @@ var Feed = function (_React$Component) {
         method: "GET",
         url: this.requestUrl + "/" + lastUploadDate,
         success: function success(resp) {
-          _this4.setState(function (prevState) {
+          _this5.setState(function (prevState) {
             return {
               posts: prevState.posts.concat(resp)
             };
@@ -26430,7 +26446,7 @@ var Feed = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_postCreator2.default, null),
+        _react2.default.createElement(_postCreator2.default, { getFeed: this.getFeed }),
         _react2.default.createElement(
           'h2',
           null,
