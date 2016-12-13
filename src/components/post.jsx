@@ -1,5 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router';
+import javascript_time_ago from 'javascript-time-ago';
+
+javascript_time_ago.locale(require('javascript-time-ago/locales/en'));
+require('javascript-time-ago/intl-messageformat-global');
+require('intl-messageformat/dist/locale-data/en');
 
 export default class Post extends React.Component {
   constructor(props){
@@ -9,7 +14,11 @@ export default class Post extends React.Component {
     this.pic = this.props.postInfo.picture;
     this.name = this.props.postInfo.name;
     this.tags = this.props.postInfo.tags;
-    this.date = this.props.postInfo.uploadDate;
+    
+    const time_ago = new javascript_time_ago('en-US');
+    const twitter = time_ago.style.twitter();
+    
+    this.date = time_ago.format(new Date(this.props.postInfo.uploadDate), twitter);
   }
   
   render() {

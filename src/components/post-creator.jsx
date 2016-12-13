@@ -1,5 +1,6 @@
 import React from 'react';
 import AudioRecorder from '../components/audio-recorder.jsx';
+import $ from 'jquery';
 
 export default class PostCreator extends React.Component {
   constructor() {
@@ -60,7 +61,7 @@ export default class PostCreator extends React.Component {
       <div>
         <AudioRecorder setAudioBlob={this.setAudioBlob}/>
         Tags: <input type="text" value={this.state.value} onChange={this.handleChange}/>
-        <button onClick={this.handleClick}>Chirp</button>
+        <button id="chirp" onClick={this.handleClick}>Chirp</button>
       </div>
     );
   }

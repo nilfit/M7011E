@@ -36,12 +36,13 @@ export default class AudioRecorder extends React.Component {
     
     document.getElementById("startButton").disabled = false;
     document.getElementById("stopButton").disabled = true;
+    document.getElementById("chirp").disabled = false;
     
     // create WAV download link using audio data blob
     this.createDownloadLink();
     
     //Broken because of a bug.
-    //this.recorder.clear();
+    this.recorder.clear();
   }
   
   createDownloadLink() {

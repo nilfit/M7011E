@@ -1,6 +1,7 @@
 import React from 'react';
 import Post from '../components/post.jsx';
 import PostCreator from '../components/post-creator.jsx';
+import $ from 'jquery';
 
 export default class Feed extends React.Component {
   constructor() {
