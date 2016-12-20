@@ -5,8 +5,8 @@ var db = require('../db');
 var streamifier = require('streamifier');
 var dataUri = require('strong-data-uri')
 
-router.get('/user/:id', (req, res, next) => {
-  var userid = req.params['id'];
+router.get('/user/:userid', (req, res, next) => {
+  var userid = req.params['userid'];
   if (typeof userid === 'string') {
     co(function* (){
       var doc = yield db.findUserByIdString(userid);
@@ -118,8 +118,79 @@ router.get('/tag/:tag', (req, res) => {
   }
 });
 
+router.get('/user/:userid/feed/:beforeDate', (req, res) => {
+  var beforeDate = req.params['beforeDate'];
+  var userid = req.params['userid'];
+  if (typeof beforeDate === 'string' && typeof userid === 'string') {
+    var date = new Date(beforeDate);
+    var pageSize = 10;
+    db.getUserFeedBeforeDate(userid, date, pageSize).then(feed => res.json(feed));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
 
-// router.get('/profile/:username', function(req, res, next) {
+router.get('/user/:userid/feed', (req, res) => {
+  var userid = req.params['userid'];
+  if (typeof userid === 'string') {
+    var date = new Date();
+    var pageSize = 10;
+    db.getUserFeedBeforeDate(userid, date, pageSize).then(feed => res.json(feed));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
 
+router.post('/user/:targetuserid/follow', (req, res) => {
+  var userid = req.session.login;
+  var useridString = String(userid);
+  var targetUserIdString = req.params['targetuserid'];
+  if (typeof targetUserIdString === 'string') {
+    db.follow(currentUserIdString, targetUserIdString);
+    res.status(200).end();
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+router.post('/user/:targetuserid/unfollow', (req, res) => {
+  var userid = req.session.login;
+  var useridString = String(userid);
+  var targetUserIdString = req.params['targetuserid'];
+  if (typeof targetUserIdString === 'string') {
+    db.unfollow(currentUserIdString, targetUserIdString);
+    res.status(200).end();
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+router.get('/user/:userid/following/:pageNum', (req, res) => {
+  var userid = req.params['userid'];
+  var pageNum = req.params['pageNum'];
+  if (typeof userid === 'string' && typeof pageNum === 'string') {
+    var pageSize = 10;
+    db.getFollowedBy(userid, pageNum, pageSize).then(data => res.json(data));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
+
+router.get('/user/:userid/following', (req, res) => {
+  var userid = req.params['userid'];
+  if (typeof userid === 'string') {
+    var pageSize = 10;
+    var pageNum = 0;
+    db.getFollowedBy(userid, pageNum, pageSize).then(data => res.json(data));
+  } else {
+    // The request cannot be fulfilled due to bad syntax.
+    res.status(400).end();
+  }
+});
 
 module.exports = router;

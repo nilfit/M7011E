@@ -8,15 +8,14 @@ var db;
 // TODO ensure db is assigned before functions from this module try to use it
 MongoClient.connect(url).then(value => db = value);
 
-function findUserByIdString(useridString){
-  return co(function*() {
-    var db = yield MongoClient.connect(url);
-    var col = db.collection('user');
-    var doc = yield col.findOne({_id : ObjectID.createFromHexString(useridString)});
-    return doc;
-  }).catch(function(err) {
-    console.log(err.stack);
-  });
+function findUserById(userid) {
+  var col = db.collection('user');
+  return col.findOne({_id: userid});
+}
+
+function findUserByIdString(useridString) {
+  var userid = ObjectID.createFromHexString(useridString);
+  return findUserById(userid);
 }
 
 // returns the _id of the user
@@ -135,6 +134,60 @@ function getTagFeedBeforeDate(tag, date, pageSize) {
   });
 }
 
+function getUserFeedBeforeDate(useridString, date, pageSize) {
+  return new Promise((resolve, reject) => {
+    var userid = ObjectID.createFromHexString(useridString);
+    var feed = [];
+    var follow = db.collection('follow');
+    follow.find({followerid: userid})
+      .project({followedid:1})
+      .toArray().then(followDocs => {
+        var followedUsers = followDocs.map(doc => doc.followedid)
+        var col = db.collection('post.files');
+        col.find({uploadDate: {'$lt': date}, 'metadata.userid': {'$in': followedUsers}})
+        .sort({uploadDate: -1})
+        .limit(pageSize)
+        .toArray()
+        .then(posts => {
+          Promise.all(posts.map(getPostMetaFields))
+          .then(docsWithMeta => resolve(docsWithMeta));
+        }).catch(err => reject(err));
+      });
+  });
+}
+
+function follow(followeridString, followedidString) {
+  var col = db.collection('follow');
+  var followerid = ObjectID.createFromHexString(followeridString);
+  var followedid = ObjectID.createFromHexString(followedidString);
+  return col.insertOne({followerid: followerid, followedid: followedid});
+}
+
+function unfollow(followeridString, followedidString) {
+  var col = db.collection('follow');
+  var followerid = ObjectID.createFromHexString(followeridString);
+  var followedid = ObjectID.createFromHexString(followedidString);
+  return col.deleteOne({followerid: followerid, followedid: followedid});
+}
+
+function getFollowedBy(followeridString, pageNum, pageSize) {
+  return new Promise(function(resolve, reject) {
+    var col = db.collection('follow');
+    var followerid = ObjectID.createFromHexString(followeridString);
+    col.find({followerid: followerid})
+      .sort({followedid:1})
+      .skip(pageNum * pageSize)
+      .limit(pageSize)
+      .project({followedid:1})
+      .toArray()
+      .then(docs => {
+        Promise.all(docs.map(doc => findUserById(doc.followedid)))
+        .then(followedUsers => resolve(followedUsers));
+      }
+    ).catch(err => reject(err));
+  });
+}
+
 exports.findUserByIdString = findUserByIdString;
 exports.findOrCreateGoogleUser = findOrCreateGoogleUser;
 exports.insertPost = insertPost;
@@ -142,3 +195,7 @@ exports.getPost = getPost;
 exports.getPostMeta = getPostMeta;
 exports.getFeedBeforeDate = getFeedBeforeDate;
 exports.getTagFeedBeforeDate = getTagFeedBeforeDate;
+exports.getUserFeedBeforeDate = getUserFeedBeforeDate;
+exports.follow = follow;
+exports.unfollow = unfollow;
+exports.getFollowedBy = getFollowedBy;
