@@ -58,9 +58,9 @@ export default class PostCreator extends React.Component {
 
   render() {
     return (
-      <div>
-        <AudioRecorder setAudioBlob={this.setAudioBlob}/>
-        Tags: <input type="text" value={this.state.value} onChange={this.handleChange}/>
+      <div className="post">
+        <AudioRecorder setAudioBlob={this.setAudioBlob}/><br></br>
+        Tags: <input type="text" value={this.state.value} onChange={this.handleChange} placeholder="Enter tags here"/><br></br>
         <button id="chirp" onClick={this.handleClick}>Chirp</button>
       </div>
     );

@@ -14,6 +14,7 @@ export default class Post extends React.Component {
     this.pic = this.props.postInfo.picture;
     this.name = this.props.postInfo.name;
     this.tags = this.props.postInfo.tags;
+    this.userid = this.props.postInfo.userid;
     
     const time_ago = new javascript_time_ago('en-US');
     const twitter = time_ago.style.twitter();
@@ -26,7 +27,7 @@ export default class Post extends React.Component {
       <div className="post">
         <ul className="post_user">
           <li><img src={this.pic} height="60" width="60" alt="profile picture" className="post_img"/></li>
-          <li><Link to="/profile/1">{this.name}</Link></li>
+          <li><Link to={"/profile/"+this.userid}>{this.name}</Link></li>
         </ul>
         <ul className="post_data">
           <li>

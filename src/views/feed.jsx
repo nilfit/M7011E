@@ -13,6 +13,8 @@ export default class Feed extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.updateUrl = this.updateUrl.bind(this);
     this.getFeed = this.getFeed.bind(this);
+    this.getFollowingFeed = this.getFollowingFeed.bind(this);
+    this.getGlobalFeed = this.getGlobalFeed.bind(this);
   }
   
   updateUrl(tag){
@@ -24,17 +26,29 @@ export default class Feed extends React.Component {
     }
   }
   
-  
   getFeed() {
     $.ajax({
       method: "GET",
       url: this.requestUrl,
       success: (resp) => {
+        console.log(resp);
         this.setState({
           posts: resp
         });
       }
     });
+  }
+  
+  getGlobalFeed() {
+    event.preventDefault();
+    this.requestUrl = "/api/feed/";
+    this.getFeed();
+  }
+  
+  getFollowingFeed() {
+    event.preventDefault();
+    this.requestUrl = "/api/feed/"+window.id;
+    this.getFeed();
   }
   
   componentDidMount() {
@@ -70,16 +84,20 @@ export default class Feed extends React.Component {
   handleClick(event){
     event.preventDefault();
     //Fetch another 10 posts
-    var lastUploadDate = this.state.posts[this.state.posts.length-1].uploadDate;
-    $.ajax({
-      method: "GET",
-      url: this.requestUrl+"/"+lastUploadDate,
-      success: (resp) => {
-        this.setState((prevState) => ({
-          posts: prevState.posts.concat(resp),
-        }));
-      }
-    });
+    if (this.state.posts.length > 0){
+      var lastUploadDate = this.state.posts[this.state.posts.length-1].uploadDate;
+      $.ajax({
+        method: "GET",
+        url: this.requestUrl+"/"+lastUploadDate,
+        success: (resp) => {
+          this.setState((prevState) => ({
+            posts: prevState.posts.concat(resp),
+          }));
+        }
+      });
+    }else{
+      console.log("No posts to get");
+    }
   }
   
   render() {
@@ -87,6 +105,8 @@ export default class Feed extends React.Component {
       <div>
         <PostCreator getFeed={this.getFeed}/>
         <h2>Feed</h2>
+        <button onClick={this.getGlobalFeed}>Global</button>
+        <button onClick={this.getFollowingFeed}>Following</button>
         <div className="feed">
           <FeedList posts={this.state.posts}/>
           <input type="button" value="Load More" onClick={this.handleClick}/>

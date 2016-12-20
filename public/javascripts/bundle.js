@@ -40485,6 +40485,10 @@ var AudioRecorder = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (AudioRecorder.__proto__ || Object.getPrototypeOf(AudioRecorder)).call(this));
 
+    _this.state = {
+      status: ""
+    };
+
     _this.startUserMedia = _this.startUserMedia.bind(_this);
     _this.startRecording = _this.startRecording.bind(_this);
     _this.stopRecording = _this.stopRecording.bind(_this);
@@ -40512,6 +40516,10 @@ var AudioRecorder = function (_React$Component) {
       console.log('Recording...');
       document.getElementById("startButton").disabled = true;
       document.getElementById("stopButton").disabled = false;
+
+      this.setState({
+        status: " Recording..."
+      });
     }
   }, {
     key: 'stopRecording',
@@ -40522,6 +40530,10 @@ var AudioRecorder = function (_React$Component) {
       document.getElementById("startButton").disabled = false;
       document.getElementById("stopButton").disabled = true;
       document.getElementById("chirp").disabled = false;
+
+      this.setState({
+        status: " Recording done."
+      });
 
       // create WAV download link using audio data blob
       this.createDownloadLink();
@@ -40565,9 +40577,10 @@ var AudioRecorder = function (_React$Component) {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        'div',
+        'span',
         null,
         _react2.default.createElement('audio', { id: 'recording', controls: 'controls' }),
+        _react2.default.createElement('br', null),
         _react2.default.createElement(
           'button',
           { id: 'startButton', onClick: this.startRecording },
@@ -40577,6 +40590,11 @@ var AudioRecorder = function (_React$Component) {
           'button',
           { id: 'stopButton', onClick: this.stopRecording },
           'Stop'
+        ),
+        _react2.default.createElement(
+          'span',
+          { id: 'status', style: { color: 'red' } },
+          this.state.status
         )
       );
     }
@@ -40844,10 +40862,12 @@ var PostCreator = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'post' },
         _react2.default.createElement(_audioRecorder2.default, { setAudioBlob: this.setAudioBlob }),
+        _react2.default.createElement('br', null),
         'Tags: ',
-        _react2.default.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange }),
+        _react2.default.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange, placeholder: 'Enter tags here' }),
+        _react2.default.createElement('br', null),
         _react2.default.createElement(
           'button',
           { id: 'chirp', onClick: this.handleClick },
@@ -40906,6 +40926,7 @@ var Post = function (_React$Component) {
     _this.pic = _this.props.postInfo.picture;
     _this.name = _this.props.postInfo.name;
     _this.tags = _this.props.postInfo.tags;
+    _this.userid = _this.props.postInfo.userid;
 
     var time_ago = new _javascriptTimeAgo2.default('en-US');
     var twitter = time_ago.style.twitter();
@@ -40933,7 +40954,7 @@ var Post = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouter.Link,
-              { to: '/profile/1' },
+              { to: "/profile/" + this.userid },
               this.name
             )
           )
@@ -41050,19 +41071,37 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Main = function (_React$Component) {
   _inherits(Main, _React$Component);
 
-  function Main() {
+  function Main(props) {
     _classCallCheck(this, Main);
 
-    return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
+
+    _this.setLogin = _this.setLogin.bind(_this);
+    _this.unsetLogin = _this.unsetLogin.bind(_this);
+    _this.state = { loginId: null };
+    return _this;
   }
 
   _createClass(Main, [{
+    key: 'setLogin',
+    value: function setLogin(id) {
+      id = id.replace(/^"(.*)"$/, '$1');
+      this.setState({ loginId: id });
+      window.id = id;
+    }
+  }, {
+    key: 'unsetLogin',
+    value: function unsetLogin() {
+      this.setState({ loginId: null });
+      delete window.id;
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_menu2.default, null),
+        _react2.default.createElement(_menu2.default, { setLogin: this.setLogin, unsetLogin: this.unsetLogin, loginId: this.state.loginId }),
         _react2.default.createElement(
           'div',
           { className: 'content' },
@@ -41085,7 +41124,7 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(_reactRouter.Route, { path: '/feed', component: _feed2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/feed/:tag', component: _feed2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userID', component: _profile2.default })
+    _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userId', component: _profile2.default })
   )
 ), document.getElementById('root'));
 
@@ -41123,31 +41162,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Menu = function (_React$Component) {
   _inherits(Menu, _React$Component);
 
-  function Menu(props) {
+  function Menu() {
     _classCallCheck(this, Menu);
 
-    var _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
-
-    _this.setLogin = _this.setLogin.bind(_this);
-    _this.unsetLogin = _this.unsetLogin.bind(_this);
-    _this.state = { loginId: null };
-    return _this;
+    return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).apply(this, arguments));
   }
 
   _createClass(Menu, [{
-    key: 'setLogin',
-    value: function setLogin(id) {
-      this.setState({ loginId: id });
-    }
-  }, {
-    key: 'unsetLogin',
-    value: function unsetLogin() {
-      this.setState({ loginId: null });
-    }
-  }, {
     key: 'render',
     value: function render() {
-      var isLoggedIn = this.state.loginId != null;
+      var isLoggedIn = this.props.loginId != null;
       var buttons = null;
       if (isLoggedIn) {
         buttons = _react2.default.createElement(
@@ -41156,7 +41180,7 @@ var Menu = function (_React$Component) {
           _react2.default.createElement(
             'li',
             null,
-            _react2.default.createElement(_logoutButton2.default, { unsetLogin: this.unsetLogin })
+            _react2.default.createElement(_logoutButton2.default, { unsetLogin: this.props.unsetLogin })
           ),
           _react2.default.createElement(
             'li',
@@ -41172,11 +41196,10 @@ var Menu = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouter.Link,
-              { to: '/profile/1' },
+              { to: "/profile/" + this.props.loginId },
               'Profile'
             )
           ),
-          ' ',
           _react2.default.createElement(
             'li',
             null,
@@ -41194,7 +41217,7 @@ var Menu = function (_React$Component) {
           _react2.default.createElement(
             'li',
             null,
-            _react2.default.createElement(_loginButton2.default, { setLogin: this.setLogin })
+            _react2.default.createElement(_loginButton2.default, { setLogin: this.props.setLogin })
           ),
           _react2.default.createElement(
             'li',
@@ -41333,6 +41356,8 @@ var Feed = function (_React$Component) {
     _this.handleClick = _this.handleClick.bind(_this);
     _this.updateUrl = _this.updateUrl.bind(_this);
     _this.getFeed = _this.getFeed.bind(_this);
+    _this.getFollowingFeed = _this.getFollowingFeed.bind(_this);
+    _this.getGlobalFeed = _this.getGlobalFeed.bind(_this);
     return _this;
   }
 
@@ -41355,11 +41380,26 @@ var Feed = function (_React$Component) {
         method: "GET",
         url: this.requestUrl,
         success: function success(resp) {
+          console.log(resp);
           _this2.setState({
             posts: resp
           });
         }
       });
+    }
+  }, {
+    key: 'getGlobalFeed',
+    value: function getGlobalFeed() {
+      event.preventDefault();
+      this.requestUrl = "/api/feed/";
+      this.getFeed();
+    }
+  }, {
+    key: 'getFollowingFeed',
+    value: function getFollowingFeed() {
+      event.preventDefault();
+      this.requestUrl = "/api/feed/" + window.id;
+      this.getFeed();
     }
   }, {
     key: 'componentDidMount',
@@ -41406,18 +41446,22 @@ var Feed = function (_React$Component) {
 
       event.preventDefault();
       //Fetch another 10 posts
-      var lastUploadDate = this.state.posts[this.state.posts.length - 1].uploadDate;
-      _jquery2.default.ajax({
-        method: "GET",
-        url: this.requestUrl + "/" + lastUploadDate,
-        success: function success(resp) {
-          _this5.setState(function (prevState) {
-            return {
-              posts: prevState.posts.concat(resp)
-            };
-          });
-        }
-      });
+      if (this.state.posts.length > 0) {
+        var lastUploadDate = this.state.posts[this.state.posts.length - 1].uploadDate;
+        _jquery2.default.ajax({
+          method: "GET",
+          url: this.requestUrl + "/" + lastUploadDate,
+          success: function success(resp) {
+            _this5.setState(function (prevState) {
+              return {
+                posts: prevState.posts.concat(resp)
+              };
+            });
+          }
+        });
+      } else {
+        console.log("No posts to get");
+      }
     }
   }, {
     key: 'render',
@@ -41430,6 +41474,16 @@ var Feed = function (_React$Component) {
           'h2',
           null,
           'Feed'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.getGlobalFeed },
+          'Global'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.getFollowingFeed },
+          'Following'
         ),
         _react2.default.createElement(
           'div',
@@ -41531,7 +41585,7 @@ var Home = function (_React$Component) {
 exports.default = Home;
 
 },{"react":334}],349:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -41539,9 +41593,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41551,89 +41609,180 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ProfileWrapper = function (_React$Component) {
-  _inherits(ProfileWrapper, _React$Component);
-
-  function ProfileWrapper() {
-    _classCallCheck(this, ProfileWrapper);
-
-    var _this = _possibleConstructorReturn(this, (ProfileWrapper.__proto__ || Object.getPrototypeOf(ProfileWrapper)).call(this));
-
-    _this.state = {
-      userName: "",
-      userDescription: "",
-      userImage: ""
-    };
-    return _this;
-  }
-
-  _createClass(ProfileWrapper, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      //Do some stuff here with the api
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(newProps) {
-      //Do some stuff here with the api
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react2.default.createElement(
-        "div",
-        null,
-        _react2.default.createElement(Profile, { userName: "birdboy", userDescription: "Hello my name is birdboy", userImage: "./bird.png" })
-      );
-    }
-  }]);
-
-  return ProfileWrapper;
-}(_react2.default.Component);
-
-exports.default = ProfileWrapper;
-
-var Profile = function (_React$Component2) {
-  _inherits(Profile, _React$Component2);
+var Profile = function (_React$Component) {
+  _inherits(Profile, _React$Component);
 
   function Profile() {
     _classCallCheck(this, Profile);
 
-    return _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this));
+
+    _this.state = {
+      userName: "",
+      userPicture: "",
+      following: []
+    };
+    _this.loadProfile = _this.loadProfile.bind(_this);
+    _this.unfollowUser = _this.unfollowUser.bind(_this);
+    _this.followUser = _this.followUser.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
+    return _this;
   }
 
   _createClass(Profile, [{
-    key: "render",
+    key: 'unfollowUser',
+    value: function unfollowUser(id) {
+      _jquery2.default.ajax({
+        method: "POST",
+        url: "/api/user/" + id + "/unfollow",
+        success: function success(resp) {
+          console.log("unfollowed");
+        }
+      });
+    }
+  }, {
+    key: 'followUser',
+    value: function followUser() {
+      _jquery2.default.ajax({
+        method: "POST",
+        url: "/api/user/" + this.props.params.userId + "/follow",
+        success: function success(resp) {
+          console.log("success");
+        }
+      });
+    }
+  }, {
+    key: 'testunfollow',
+    value: function testunfollow() {}
+
+    //Fetch user information and list of people the user is following
+
+  }, {
+    key: 'loadProfile',
+    value: function loadProfile(id) {
+      var _this2 = this;
+
+      //Get user information
+      var userId = id;
+      _jquery2.default.ajax({
+        method: "GET",
+        url: "/api/user/" + userId,
+        success: function success(resp) {
+          _this2.setState({
+            userName: resp.name,
+            userPicture: resp.picture
+          });
+        }
+      });
+      //Get all the users the user is following
+      _jquery2.default.ajax({
+        method: "GET",
+        url: "/api/user/" + userId + "/following/1",
+        success: function success(resp) {
+          console.log(resp);
+          _this2.setState({
+            following: resp
+          });
+        }
+      });
+    }
+
+    //Triggers when the component is loaded into the DOM
+
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.loadProfile(this.props.params.userId);
+    }
+
+    //Triggers when the component receives new props from parent component
+
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(newProps) {
+      this.loadProfile(newProps);
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick() {
+      event.preventDefault();
+      //Fetch another 10 followed users
+      /*
+      if (this.state.following.length > 0){
+        $.ajax({
+          method: "GET",
+          url: this.requestUrl+"/"+lastUploadDate,
+          success: (resp) => {
+            this.setState((prevState) => ({
+              posts: prevState.posts.concat(resp),
+            }));
+          }
+        });
+      }else{
+        console.log("No posts to get");
+      }
+      */
+    }
+  }, {
+    key: 'render',
     value: function render() {
-      return _react2.default.createElement(
-        "div",
-        { className: "profile" },
-        _react2.default.createElement(
-          "ul",
+      var sameUser = window.id == this.props.params.userId;
+      var button = null;
+      if (!sameUser) {
+        button = _react2.default.createElement(
+          'div',
           null,
           _react2.default.createElement(
-            "li",
-            null,
-            _react2.default.createElement("img", { src: this.props.userImage, height: "60", width: "60", alt: "profile picture", className: "post_img" })
+            'button',
+            { onClick: this.followUser },
+            'Follow'
           ),
           _react2.default.createElement(
-            "li",
+            'button',
+            { onClick: this.unfollowUser },
+            'Unfollow'
+          )
+        );
+      }
+      return _react2.default.createElement(
+        'div',
+        { className: 'profile' },
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'li',
             null,
-            this.props.userName
+            _react2.default.createElement('img', { src: this.state.userPicture, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
           ),
           _react2.default.createElement(
-            "li",
+            'li',
+            null,
+            this.state.userName
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            button
+          ),
+          _react2.default.createElement(
+            'li',
             null,
             _react2.default.createElement(
-              "h3",
+              'h3',
               null,
-              "Description:"
-            ),
-            _react2.default.createElement(
-              "p",
-              null,
-              this.props.userDescription
+              'Following:'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(FollowingList, { following: this.state.following, unfollowUser: this.unfollowUser })
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement('input', { type: 'button', value: 'Load More', onClick: this.handleClick })
           )
         )
       );
@@ -41643,4 +41792,75 @@ var Profile = function (_React$Component2) {
   return Profile;
 }(_react2.default.Component);
 
-},{"react":334}]},{},[344]);
+exports.default = Profile;
+
+var FollowingList = function (_React$Component2) {
+  _inherits(FollowingList, _React$Component2);
+
+  function FollowingList() {
+    _classCallCheck(this, FollowingList);
+
+    return _possibleConstructorReturn(this, (FollowingList.__proto__ || Object.getPrototypeOf(FollowingList)).apply(this, arguments));
+  }
+
+  _createClass(FollowingList, [{
+    key: 'render',
+    value: function render() {
+      var _this4 = this;
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        this.props.following.map(function (item) {
+          return _react2.default.createElement('userDisplay', { userInfo: item, unfollowUser: _this4.props.unfollowUser });
+        })
+      );
+    }
+  }]);
+
+  return FollowingList;
+}(_react2.default.Component);
+
+var userDisplay = function (_React$Component3) {
+  _inherits(userDisplay, _React$Component3);
+
+  function userDisplay() {
+    _classCallCheck(this, userDisplay);
+
+    return _possibleConstructorReturn(this, (userDisplay.__proto__ || Object.getPrototypeOf(userDisplay)).apply(this, arguments));
+  }
+
+  _createClass(userDisplay, [{
+    key: 'render',
+    value: function render() {
+      var sameUser = window.id == this.props.userInfo.userid;
+      var button = null;
+      if (!sameUser) {
+        button = _react2.default.createElement('button', { onClick: this.props.unfollowUser });
+      }
+      return _react2.default.createElement(
+        'ul',
+        { className: 'post' },
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement('img', { src: this.props.userInfo.userPicture, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          this.props.userInfo.userName
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement('button', { onClick: this.props.unfollowUser })
+        )
+      );
+    }
+  }]);
+
+  return userDisplay;
+}(_react2.default.Component);
+
+},{"jquery":146,"react":334}]},{},[344]);

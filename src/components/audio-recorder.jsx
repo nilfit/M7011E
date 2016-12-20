@@ -4,6 +4,10 @@ import Recorder from 'recorderjs';
 export default class AudioRecorder extends React.Component {
   constructor(){
     super();
+    this.state = {
+      status: "",
+    };
+    
     this.startUserMedia = this.startUserMedia.bind(this);
     this.startRecording = this.startRecording.bind(this);
     this.stopRecording = this.stopRecording.bind(this);
@@ -28,6 +32,10 @@ export default class AudioRecorder extends React.Component {
     console.log('Recording...');
     document.getElementById("startButton").disabled = true;
     document.getElementById("stopButton").disabled = false;
+    
+    this.setState({
+      status: " Recording..."
+    });
   }
   
   stopRecording() {
@@ -37,6 +45,10 @@ export default class AudioRecorder extends React.Component {
     document.getElementById("startButton").disabled = false;
     document.getElementById("stopButton").disabled = true;
     document.getElementById("chirp").disabled = false;
+    
+    this.setState({
+      status: " Recording done."
+    });
     
     // create WAV download link using audio data blob
     this.createDownloadLink();
@@ -75,11 +87,12 @@ export default class AudioRecorder extends React.Component {
   
   render() {
     return (
-      <div>
-        <audio id="recording" controls="controls"></audio>
+      <span>
+        <audio id="recording" controls="controls"></audio><br></br>
         <button id="startButton" onClick={this.startRecording}>Record</button>
         <button id="stopButton" onClick={this.stopRecording}>Stop</button>
-      </div>
+        <span id="status" style={{color: 'red'}}>{this.state.status}</span>
+      </span>
     );
   }
 }
