@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var secrets = require('./secret/secrets');
+var path = require('path')
 
 var auth = require('./routes/auth');
 var api = require('./routes/api');
@@ -42,8 +43,8 @@ app.use(session({ secret: secrets.sessionSecret,
                     secure: secureCookies
                   }
                 }));
-app.use('/auth', auth);
-app.use('/api', ensureAuthenticated, api);
+app.use('/auth', auth, notFound404);
+app.use('/api', ensureAuthenticated, api, notFound404);
 var db = require('./db.js');
 if (app.get('env') === 'development') {
   app.get('/test', (req, res) => {
@@ -57,14 +58,19 @@ if (app.get('env') === 'development') {
 }
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+function notFound404(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
+}
+
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
+
+// if no other function took the request, respond with 404
+app.use(notFound404);
 
 // error handler
 app.use(function(err, req, res, next) {
