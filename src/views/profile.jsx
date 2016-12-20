@@ -79,15 +79,12 @@ export default class Profile extends React.Component {
   
   handleClick() {
     event.preventDefault();
-    console.log("handleclickerino");
     //Fetch another 10 followed users
     if (this.state.following.length > 0){
       $.ajax({
         method: "GET",
         url: "/api/user/"+this.props.params.userId+"/following/"+this.page,
         success: (resp) => {
-          console.log("more posts success");
-          console.log(resp);
           this.page = this.page + 1;
           this.setState((prevState) => ({
             following: prevState.following.concat(resp),

@@ -41710,15 +41710,12 @@ var Profile = function (_React$Component) {
       var _this3 = this;
 
       event.preventDefault();
-      console.log("handleclickerino");
       //Fetch another 10 followed users
       if (this.state.following.length > 0) {
         _jquery2.default.ajax({
           method: "GET",
           url: "/api/user/" + this.props.params.userId + "/following/" + this.page,
           success: function success(resp) {
-            console.log("more posts success");
-            console.log(resp);
             _this3.page = _this3.page + 1;
             _this3.setState(function (prevState) {
               return {
