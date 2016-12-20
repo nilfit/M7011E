@@ -1,9 +1,11 @@
 import React from 'react';
 import $ from 'jquery';
+import {Link} from 'react-router';
 
 export default class Profile extends React.Component {
   constructor() {
     super();
+    this.page = 0;
     this.state = {
       userName: "",
       userPicture: "",
@@ -15,10 +17,10 @@ export default class Profile extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   
-  unfollowUser(id){
+  unfollowUser(){
     $.ajax({
       method: "POST",
-      url: "/api/user/"+id+"/unfollow",
+      url: "/api/user/"+this.props.params.userId+"/unfollow",
       success: (resp) => {
         console.log("unfollowed");
       }
@@ -30,13 +32,9 @@ export default class Profile extends React.Component {
       method: "POST",
       url: "/api/user/"+this.props.params.userId+"/follow",
       success: (resp) => {
-        console.log("success");
+        console.log("followed");
       }
     });
-  }
-  
-  testunfollow(){
-    
   }
   
   //Fetch user information and list of people the user is following
@@ -56,11 +54,11 @@ export default class Profile extends React.Component {
     //Get all the users the user is following
     $.ajax({
       method: "GET",
-      url: "/api/user/"+userId+"/following/1",
+      url: "/api/user/"+userId+"/following/"+this.page,
       success: (resp) => {
-        console.log(resp);
+        this.page = this.page + 1;
         this.setState({
-          following: resp
+          following: resp,
         });
       }
     });
@@ -73,27 +71,32 @@ export default class Profile extends React.Component {
   
   //Triggers when the component receives new props from parent component
   componentWillReceiveProps(newProps){
-    this.loadProfile(newProps);
+    if (newProps.userId !== 'undefined'){
+      this.page = 0;
+      this.loadProfile(newProps.params.userId);
+    }
   }
   
   handleClick() {
     event.preventDefault();
+    console.log("handleclickerino");
     //Fetch another 10 followed users
-    /*
     if (this.state.following.length > 0){
       $.ajax({
         method: "GET",
-        url: this.requestUrl+"/"+lastUploadDate,
+        url: "/api/user/"+this.props.params.userId+"/following/"+this.page,
         success: (resp) => {
+          console.log("more posts success");
+          console.log(resp);
+          this.page = this.page + 1;
           this.setState((prevState) => ({
-            posts: prevState.posts.concat(resp),
+            following: prevState.following.concat(resp),
           }));
         }
       });
     }else{
       console.log("No posts to get");
     }
-    */
   }
   
   render() {
@@ -112,7 +115,7 @@ export default class Profile extends React.Component {
           <li>{this.state.userName}</li>
           <li>{button}</li>
           <li><h3>Following:</h3></li>
-          <li><FollowingList following={this.state.following} unfollowUser={this.unfollowUser}/></li>
+          <li><FollowingList following={this.state.following}/></li>
           <li><input type="button" value="Load More" onClick={this.handleClick}/></li>
         </ul>
       </div>
@@ -123,27 +126,21 @@ export default class Profile extends React.Component {
 class FollowingList extends React.Component {
   render() {
     return (
-      <div>
+      <ul>
         {this.props.following.map(item => (
-          <userDisplay userInfo={item} unfollowUser={this.props.unfollowUser}/>
+          <li key={item._id}><UserDisplay userInfo={item}/></li>
         ))}
-      </div>
+      </ul>
     );
   }
 }
 
-class userDisplay extends React.Component {
+class UserDisplay extends React.Component {
   render() {
-    const sameUser = (window.id == this.props.userInfo.userid);
-    let button = null;
-    if (!sameUser){
-      button = <button onClick={this.props.unfollowUser} />
-    }
     return (
-      <ul className="post">
-        <li><img src={this.props.userInfo.userPicture} height="60" width="60" alt="profile picture" className="post_img"/></li>
-        <li>{this.props.userInfo.userName}</li>
-        <li><button onClick={this.props.unfollowUser} /></li>
+      <ul>
+        <li><img src={this.props.userInfo.picture} height="60" width="60" alt="profile picture" className="post_img"/></li>
+        <li><Link to={"/profile/"+this.props.userInfo._id}>{this.props.userInfo.name}</Link></li>
       </ul>
     )
   }

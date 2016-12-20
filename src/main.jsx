@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, hashHistory} from 'react-router';
+import { Router, Route, IndexRoute, browserHistory} from 'react-router';
 import Menu from './menu.jsx';
 import About from './views/about.jsx';
 import Feed from './views/feed.jsx';
@@ -38,7 +38,7 @@ class Main extends React.Component{
 }
 
 ReactDOM.render(
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path="/" component={Main}>
       <IndexRoute component={Home}/>
       <Route path="/feed" component={Feed}/>

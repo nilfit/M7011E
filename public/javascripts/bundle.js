@@ -41116,7 +41116,7 @@ var Main = function (_React$Component) {
 
 _reactDom2.default.render(_react2.default.createElement(
   _reactRouter.Router,
-  { history: _reactRouter.hashHistory },
+  { history: _reactRouter.browserHistory },
   _react2.default.createElement(
     _reactRouter.Route,
     { path: '/', component: Main },
@@ -41601,6 +41601,8 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41617,6 +41619,7 @@ var Profile = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this));
 
+    _this.page = 0;
     _this.state = {
       userName: "",
       userPicture: "",
@@ -41631,10 +41634,10 @@ var Profile = function (_React$Component) {
 
   _createClass(Profile, [{
     key: 'unfollowUser',
-    value: function unfollowUser(id) {
+    value: function unfollowUser() {
       _jquery2.default.ajax({
         method: "POST",
-        url: "/api/user/" + id + "/unfollow",
+        url: "/api/user/" + this.props.params.userId + "/unfollow",
         success: function success(resp) {
           console.log("unfollowed");
         }
@@ -41647,13 +41650,10 @@ var Profile = function (_React$Component) {
         method: "POST",
         url: "/api/user/" + this.props.params.userId + "/follow",
         success: function success(resp) {
-          console.log("success");
+          console.log("followed");
         }
       });
     }
-  }, {
-    key: 'testunfollow',
-    value: function testunfollow() {}
 
     //Fetch user information and list of people the user is following
 
@@ -41677,9 +41677,9 @@ var Profile = function (_React$Component) {
       //Get all the users the user is following
       _jquery2.default.ajax({
         method: "GET",
-        url: "/api/user/" + userId + "/following/1",
+        url: "/api/user/" + userId + "/following/" + this.page,
         success: function success(resp) {
-          console.log(resp);
+          _this2.page = _this2.page + 1;
           _this2.setState({
             following: resp
           });
@@ -41700,28 +41700,37 @@ var Profile = function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(newProps) {
-      this.loadProfile(newProps);
+      if (newProps.userId !== 'undefined') {
+        this.page = 0;
+        this.loadProfile(newProps.params.userId);
+      }
     }
   }, {
     key: 'handleClick',
     value: function handleClick() {
+      var _this3 = this;
+
       event.preventDefault();
+      console.log("handleclickerino");
       //Fetch another 10 followed users
-      /*
-      if (this.state.following.length > 0){
-        $.ajax({
+      if (this.state.following.length > 0) {
+        _jquery2.default.ajax({
           method: "GET",
-          url: this.requestUrl+"/"+lastUploadDate,
-          success: (resp) => {
-            this.setState((prevState) => ({
-              posts: prevState.posts.concat(resp),
-            }));
+          url: "/api/user/" + this.props.params.userId + "/following/" + this.page,
+          success: function success(resp) {
+            console.log("more posts success");
+            console.log(resp);
+            _this3.page = _this3.page + 1;
+            _this3.setState(function (prevState) {
+              return {
+                following: prevState.following.concat(resp)
+              };
+            });
           }
         });
-      }else{
+      } else {
         console.log("No posts to get");
       }
-      */
     }
   }, {
     key: 'render',
@@ -41777,7 +41786,7 @@ var Profile = function (_React$Component) {
           _react2.default.createElement(
             'li',
             null,
-            _react2.default.createElement(FollowingList, { following: this.state.following, unfollowUser: this.unfollowUser })
+            _react2.default.createElement(FollowingList, { following: this.state.following })
           ),
           _react2.default.createElement(
             'li',
@@ -41806,13 +41815,15 @@ var FollowingList = function (_React$Component2) {
   _createClass(FollowingList, [{
     key: 'render',
     value: function render() {
-      var _this4 = this;
-
       return _react2.default.createElement(
-        'div',
+        'ul',
         null,
         this.props.following.map(function (item) {
-          return _react2.default.createElement('userDisplay', { userInfo: item, unfollowUser: _this4.props.unfollowUser });
+          return _react2.default.createElement(
+            'li',
+            { key: item._id },
+            _react2.default.createElement(UserDisplay, { userInfo: item })
+          );
         })
       );
     }
@@ -41821,46 +41832,40 @@ var FollowingList = function (_React$Component2) {
   return FollowingList;
 }(_react2.default.Component);
 
-var userDisplay = function (_React$Component3) {
-  _inherits(userDisplay, _React$Component3);
+var UserDisplay = function (_React$Component3) {
+  _inherits(UserDisplay, _React$Component3);
 
-  function userDisplay() {
-    _classCallCheck(this, userDisplay);
+  function UserDisplay() {
+    _classCallCheck(this, UserDisplay);
 
-    return _possibleConstructorReturn(this, (userDisplay.__proto__ || Object.getPrototypeOf(userDisplay)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (UserDisplay.__proto__ || Object.getPrototypeOf(UserDisplay)).apply(this, arguments));
   }
 
-  _createClass(userDisplay, [{
+  _createClass(UserDisplay, [{
     key: 'render',
     value: function render() {
-      var sameUser = window.id == this.props.userInfo.userid;
-      var button = null;
-      if (!sameUser) {
-        button = _react2.default.createElement('button', { onClick: this.props.unfollowUser });
-      }
       return _react2.default.createElement(
         'ul',
-        { className: 'post' },
+        null,
         _react2.default.createElement(
           'li',
           null,
-          _react2.default.createElement('img', { src: this.props.userInfo.userPicture, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
+          _react2.default.createElement('img', { src: this.props.userInfo.picture, height: '60', width: '60', alt: 'profile picture', className: 'post_img' })
         ),
         _react2.default.createElement(
           'li',
           null,
-          this.props.userInfo.userName
-        ),
-        _react2.default.createElement(
-          'li',
-          null,
-          _react2.default.createElement('button', { onClick: this.props.unfollowUser })
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: "/profile/" + this.props.userInfo._id },
+            this.props.userInfo.name
+          )
         )
       );
     }
   }]);
 
-  return userDisplay;
+  return UserDisplay;
 }(_react2.default.Component);
 
-},{"jquery":146,"react":334}]},{},[344]);
+},{"jquery":146,"react":334,"react-router":303}]},{},[344]);
