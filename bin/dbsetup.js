@@ -26,11 +26,10 @@ co(function* () {
   console.log("index follow collection by follower");
   var r = yield follow.createIndex({followerid:1, followedid:1},
     {unique: true});
-  console.log(r);
-  console.log("index follow collection by followed");
-  var r = yield follow.createIndex({followedid:1},
-    {unique: true});
-  console.log(r);
+  // console.log(r);
+  // console.log("index follow collection by followed");
+  // var r = yield follow.createIndex({followedid:1});
+  // console.log(r);
 
   db.close();
 });
