@@ -26,6 +26,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(cookieParser());
+var secureCookies = app.get('env') === 'production';
 app.use(session({ secret: secrets.sessionSecret,
                   resave: false,
                   saveUninitialized: false,
@@ -33,9 +34,12 @@ app.use(session({ secret: secrets.sessionSecret,
                     uri: 'mongodb://localhost:27017/bird',
                     collection: 'session'
                   }),
-                  rolling: true,
+                  // rolling: true,
                   cookie: {
-                    maxAge: 900000 // 15 minutes
+                    // maxAge: 1000 * 60 * 60 * 24, // 24 hours
+                    expires: false, // session ends when the browser is closed
+                    sameSite: true,
+                    secure: secureCookies
                   }
                 }));
 app.use('/auth', auth);
