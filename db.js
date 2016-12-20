@@ -157,10 +157,23 @@ function getUserFeedBeforeDate(useridString, date, pageSize) {
 }
 
 function follow(followeridString, followedidString) {
-  var col = db.collection('follow');
-  var followerid = ObjectID.createFromHexString(followeridString);
-  var followedid = ObjectID.createFromHexString(followedidString);
-  return col.insertOne({followerid: followerid, followedid: followedid});
+  return new Promise(function(resolve, reject) {
+    var col = db.collection('follow');
+    var followerid = ObjectID.createFromHexString(followeridString);
+    var followedid = ObjectID.createFromHexString(followedidString);
+    col.findOneAndUpdate({followerid: followerid, followedid: followedid},
+      {$setOnInsert: {followerid: followerid, followedid: followedid}},
+      {upsert: true})
+      .then(doc => {
+        if (doc.ok != 1) {
+          reject("upsert failed");
+        } else if (doc.lastErrorObject.updatedExisting){
+          resolve(doc.value._id);
+        } else {
+          resolve(doc.lastErrorObject.upserted);
+        }
+      });
+  });
 }
 
 function unfollow(followeridString, followedidString) {
