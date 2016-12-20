@@ -18,11 +18,13 @@ class Main extends React.Component{
   setLogin(id) {
     id = id.replace(/^"(.*)"$/, '$1');
     this.setState({loginId: id});
-    window.id = id;
+    localStorage.id = id;
   }
   unsetLogin() {
     this.setState({loginId: null});
-    delete window.id;
+    delete localStorage.id;
+    
+    browserHistory.push('/');
   }
   
   render() {
@@ -37,14 +39,23 @@ class Main extends React.Component{
   }
 }
 
+function requireAuth(nextState, replace) {
+  if (!localStorage.id) {
+    replace({
+      pathname: '/',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
+}
+
 ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/" component={Main}>
       <IndexRoute component={Home}/>
-      <Route path="/feed" component={Feed}/>
-      <Route path="/feed/:tag" component={Feed}/>
+      <Route path="/feed" component={Feed} onEnter={requireAuth}/>
+      <Route path="/feed/:tag" component={Feed} onEnter={requireAuth}/>
       <Route path="/about" component={About}/>
-      <Route path="/profile/:userId" component={Profile}/>
+      <Route path="/profile/:userId" component={Profile} onEnter={requireAuth}/>
     </Route>
   </Router>,
 document.getElementById('root')

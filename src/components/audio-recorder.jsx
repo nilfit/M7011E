@@ -91,7 +91,7 @@ export default class AudioRecorder extends React.Component {
         <audio id="recording" controls="controls"></audio><br></br>
         <button id="startButton" onClick={this.startRecording}>Record</button>
         <button id="stopButton" onClick={this.stopRecording}>Stop</button>
-        <span id="status" style={{color: 'red'}}>{this.state.status}</span>
+        <span style={{color: 'red'}}>{this.state.status}</span>
       </span>
     );
   }
