@@ -31,7 +31,6 @@ export default class Feed extends React.Component {
       method: "GET",
       url: this.requestUrl,
       success: (resp) => {
-        console.log(resp);
         this.setState({
           posts: resp
         });
@@ -47,7 +46,7 @@ export default class Feed extends React.Component {
   
   getFollowingFeed() {
     event.preventDefault();
-    this.requestUrl = "/api/feed/"+window.id;
+    this.requestUrl = "api/user/"+window.id+"/feed/";
     this.getFeed();
   }
   

@@ -41380,7 +41380,6 @@ var Feed = function (_React$Component) {
         method: "GET",
         url: this.requestUrl,
         success: function success(resp) {
-          console.log(resp);
           _this2.setState({
             posts: resp
           });
@@ -41398,7 +41397,7 @@ var Feed = function (_React$Component) {
     key: 'getFollowingFeed',
     value: function getFollowingFeed() {
       event.preventDefault();
-      this.requestUrl = "/api/feed/" + window.id;
+      this.requestUrl = "api/user/" + window.id + "/feed/";
       this.getFeed();
     }
   }, {
