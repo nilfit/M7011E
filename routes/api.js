@@ -148,7 +148,7 @@ router.post('/user/:targetuserid/follow', (req, res) => {
   var useridString = String(userid);
   var targetUserIdString = req.params['targetuserid'];
   if (typeof targetUserIdString === 'string') {
-    db.follow(currentUserIdString, targetUserIdString);
+    db.follow(useridString, targetUserIdString);
     res.status(200).end();
   } else {
     // The request cannot be fulfilled due to bad syntax.
@@ -161,7 +161,7 @@ router.post('/user/:targetuserid/unfollow', (req, res) => {
   var useridString = String(userid);
   var targetUserIdString = req.params['targetuserid'];
   if (typeof targetUserIdString === 'string') {
-    db.unfollow(currentUserIdString, targetUserIdString);
+    db.unfollow(useridString, targetUserIdString);
     res.status(200).end();
   } else {
     // The request cannot be fulfilled due to bad syntax.
