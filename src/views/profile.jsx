@@ -9,7 +9,8 @@ export default class Profile extends React.Component {
     this.state = {
       userName: "",
       userPicture: "",
-      following: []
+      following: [],
+      status: ""
     }
     this.loadProfile = this.loadProfile.bind(this);
     this.unfollowUser = this.unfollowUser.bind(this);
@@ -22,7 +23,9 @@ export default class Profile extends React.Component {
       method: "POST",
       url: "/api/user/"+this.props.params.userId+"/unfollow",
       success: (resp) => {
-        console.log("unfollowed");
+        this.setState({
+          status: " You unfollowed "+this.state.userName
+        })
       }
     });
   }
@@ -32,7 +35,9 @@ export default class Profile extends React.Component {
       method: "POST",
       url: "/api/user/"+this.props.params.userId+"/follow",
       success: (resp) => {
-        console.log("followed");
+        this.setState({
+          status: " You followed "+this.state.userName
+        })
       }
     });
   }
@@ -97,12 +102,13 @@ export default class Profile extends React.Component {
   }
   
   render() {
-    const sameUser = (window.id == this.props.params.userId);
+    const sameUser = (localStorage.id == this.props.params.userId);
     let button = null;
     if (!sameUser){
       button = <div>
         <button onClick={this.followUser}>Follow</button>
         <button onClick={this.unfollowUser}>Unfollow</button>
+        <span style={{color: 'red'}}>{this.state.status}</span>
         </div>
     }
     return (
@@ -135,7 +141,7 @@ class FollowingList extends React.Component {
 class UserDisplay extends React.Component {
   render() {
     return (
-      <ul>
+      <ul className="userDisplay">
         <li><img src={this.props.userInfo.picture} height="60" width="60" alt="profile picture" className="post_img"/></li>
         <li><Link to={"/profile/"+this.props.userInfo._id}>{this.props.userInfo.name}</Link></li>
       </ul>

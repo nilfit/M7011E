@@ -40593,7 +40593,7 @@ var AudioRecorder = function (_React$Component) {
         ),
         _react2.default.createElement(
           'span',
-          { id: 'status', style: { color: 'red' } },
+          { style: { color: 'red' } },
           this.state.status
         )
       );
@@ -41087,13 +41087,15 @@ var Main = function (_React$Component) {
     value: function setLogin(id) {
       id = id.replace(/^"(.*)"$/, '$1');
       this.setState({ loginId: id });
-      window.id = id;
+      localStorage.id = id;
     }
   }, {
     key: 'unsetLogin',
     value: function unsetLogin() {
       this.setState({ loginId: null });
-      delete window.id;
+      delete localStorage.id;
+
+      _reactRouter.browserHistory.push('/');
     }
   }, {
     key: 'render',
@@ -41114,6 +41116,15 @@ var Main = function (_React$Component) {
   return Main;
 }(_react2.default.Component);
 
+function requireAuth(nextState, replace) {
+  if (!localStorage.id) {
+    replace({
+      pathname: '/',
+      state: { nextPathname: nextState.location.pathname }
+    });
+  }
+}
+
 _reactDom2.default.render(_react2.default.createElement(
   _reactRouter.Router,
   { history: _reactRouter.browserHistory },
@@ -41121,10 +41132,10 @@ _reactDom2.default.render(_react2.default.createElement(
     _reactRouter.Route,
     { path: '/', component: Main },
     _react2.default.createElement(_reactRouter.IndexRoute, { component: _home2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/feed', component: _feed2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/feed/:tag', component: _feed2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/feed', component: _feed2.default, onEnter: requireAuth }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/feed/:tag', component: _feed2.default, onEnter: requireAuth }),
     _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userId', component: _profile2.default })
+    _react2.default.createElement(_reactRouter.Route, { path: '/profile/:userId', component: _profile2.default, onEnter: requireAuth })
   )
 ), document.getElementById('root'));
 
@@ -41390,14 +41401,14 @@ var Feed = function (_React$Component) {
     key: 'getGlobalFeed',
     value: function getGlobalFeed() {
       event.preventDefault();
-      this.requestUrl = "/api/feed/";
+      this.requestUrl = "/api/feed";
       this.getFeed();
     }
   }, {
     key: 'getFollowingFeed',
     value: function getFollowingFeed() {
       event.preventDefault();
-      this.requestUrl = "api/user/" + window.id + "/feed/";
+      this.requestUrl = "api/user/" + localStorage.id + "/feed";
       this.getFeed();
     }
   }, {
@@ -41487,8 +41498,7 @@ var Feed = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'feed' },
-          _react2.default.createElement(FeedList, { posts: this.state.posts }),
-          _react2.default.createElement('input', { type: 'button', value: 'Load More', onClick: this.handleClick })
+          _react2.default.createElement(FeedList, { posts: this.state.posts, handleClick: this.handleClick })
         )
       );
     }
@@ -41511,16 +41521,35 @@ var FeedList = function (_React$Component2) {
   _createClass(FeedList, [{
     key: 'render',
     value: function render() {
+      var list = null;
+      if (this.props.posts.length == 0) {
+        list = _react2.default.createElement(
+          'p',
+          null,
+          'No one has chirped anything.'
+        );
+      } else {
+        list = _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'ul',
+            null,
+            this.props.posts.map(function (item) {
+              return _react2.default.createElement(
+                'li',
+                { key: item.postid },
+                _react2.default.createElement(_post2.default, { postInfo: item })
+              );
+            })
+          ),
+          _react2.default.createElement('input', { type: 'button', value: 'Load More', onClick: this.props.handleClick })
+        );
+      }
       return _react2.default.createElement(
-        'ul',
+        'div',
         null,
-        this.props.posts.map(function (item) {
-          return _react2.default.createElement(
-            'li',
-            { key: item.postid },
-            _react2.default.createElement(_post2.default, { postInfo: item })
-          );
-        })
+        list
       );
     }
   }]);
@@ -41622,7 +41651,8 @@ var Profile = function (_React$Component) {
     _this.state = {
       userName: "",
       userPicture: "",
-      following: []
+      following: [],
+      status: ""
     };
     _this.loadProfile = _this.loadProfile.bind(_this);
     _this.unfollowUser = _this.unfollowUser.bind(_this);
@@ -41634,22 +41664,30 @@ var Profile = function (_React$Component) {
   _createClass(Profile, [{
     key: 'unfollowUser',
     value: function unfollowUser() {
+      var _this2 = this;
+
       _jquery2.default.ajax({
         method: "POST",
         url: "/api/user/" + this.props.params.userId + "/unfollow",
         success: function success(resp) {
-          console.log("unfollowed");
+          _this2.setState({
+            status: " You unfollowed " + _this2.state.userName
+          });
         }
       });
     }
   }, {
     key: 'followUser',
     value: function followUser() {
+      var _this3 = this;
+
       _jquery2.default.ajax({
         method: "POST",
         url: "/api/user/" + this.props.params.userId + "/follow",
         success: function success(resp) {
-          console.log("followed");
+          _this3.setState({
+            status: " You followed " + _this3.state.userName
+          });
         }
       });
     }
@@ -41659,7 +41697,7 @@ var Profile = function (_React$Component) {
   }, {
     key: 'loadProfile',
     value: function loadProfile(id) {
-      var _this2 = this;
+      var _this4 = this;
 
       //Get user information
       var userId = id;
@@ -41667,7 +41705,7 @@ var Profile = function (_React$Component) {
         method: "GET",
         url: "/api/user/" + userId,
         success: function success(resp) {
-          _this2.setState({
+          _this4.setState({
             userName: resp.name,
             userPicture: resp.picture
           });
@@ -41678,8 +41716,8 @@ var Profile = function (_React$Component) {
         method: "GET",
         url: "/api/user/" + userId + "/following/" + this.page,
         success: function success(resp) {
-          _this2.page = _this2.page + 1;
-          _this2.setState({
+          _this4.page = _this4.page + 1;
+          _this4.setState({
             following: resp
           });
         }
@@ -41707,7 +41745,7 @@ var Profile = function (_React$Component) {
   }, {
     key: 'handleClick',
     value: function handleClick() {
-      var _this3 = this;
+      var _this5 = this;
 
       event.preventDefault();
       //Fetch another 10 followed users
@@ -41716,8 +41754,8 @@ var Profile = function (_React$Component) {
           method: "GET",
           url: "/api/user/" + this.props.params.userId + "/following/" + this.page,
           success: function success(resp) {
-            _this3.page = _this3.page + 1;
-            _this3.setState(function (prevState) {
+            _this5.page = _this5.page + 1;
+            _this5.setState(function (prevState) {
               return {
                 following: prevState.following.concat(resp)
               };
@@ -41731,7 +41769,7 @@ var Profile = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var sameUser = window.id == this.props.params.userId;
+      var sameUser = localStorage.id == this.props.params.userId;
       var button = null;
       if (!sameUser) {
         button = _react2.default.createElement(
@@ -41746,6 +41784,11 @@ var Profile = function (_React$Component) {
             'button',
             { onClick: this.unfollowUser },
             'Unfollow'
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: { color: 'red' } },
+            this.state.status
           )
         );
       }
@@ -41842,7 +41885,7 @@ var UserDisplay = function (_React$Component3) {
     value: function render() {
       return _react2.default.createElement(
         'ul',
-        null,
+        { className: 'userDisplay' },
         _react2.default.createElement(
           'li',
           null,

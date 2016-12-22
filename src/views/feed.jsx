@@ -40,13 +40,13 @@ export default class Feed extends React.Component {
   
   getGlobalFeed() {
     event.preventDefault();
-    this.requestUrl = "/api/feed/";
+    this.requestUrl = "/api/feed";
     this.getFeed();
   }
   
   getFollowingFeed() {
     event.preventDefault();
-    this.requestUrl = "api/user/"+window.id+"/feed/";
+    this.requestUrl = "api/user/"+localStorage.id+"/feed";
     this.getFeed();
   }
   
@@ -107,8 +107,7 @@ export default class Feed extends React.Component {
         <button onClick={this.getGlobalFeed}>Global</button>
         <button onClick={this.getFollowingFeed}>Following</button>
         <div className="feed">
-          <FeedList posts={this.state.posts}/>
-          <input type="button" value="Load More" onClick={this.handleClick}/>
+          <FeedList posts={this.state.posts} handleClick={this.handleClick}/>
         </div>
       </div>
     );
@@ -117,12 +116,24 @@ export default class Feed extends React.Component {
 
 class FeedList extends React.Component {
   render() {
+    let list = null;
+    if (this.props.posts.length == 0){
+      list = <p>No one has chirped anything.</p>
+    }else{
+      list = 
+        <div>
+          <ul>
+            {this.props.posts.map(item => (
+              <li key={item.postid}><Post postInfo={item}/></li>
+            ))}
+          </ul>
+          <input type="button" value="Load More" onClick={this.props.handleClick}/>
+        </div>
+    }
     return (
-      <ul>
-        {this.props.posts.map(item => (
-          <li key={item.postid}><Post postInfo={item}/></li>
-        ))}
-      </ul>
+      <div>
+        {list}
+      </div>
     );
   }
 }
