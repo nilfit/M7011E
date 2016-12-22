@@ -15,6 +15,8 @@
     "express": "~4.14.0",
     "express-session": "^1.14.2",
     "google-id-token-verifier": "^0.2.3",
+    "javascript-time-ago": "^0.4.4",
+    "jquery": "^3.1.1",
     "mongodb": "^2.2.11",
     "morgan": "~1.7.0",
     "react": "^15.3.2",
