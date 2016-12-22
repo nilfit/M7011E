@@ -70,20 +70,26 @@ function getPost(fileidString) {
 *   {uploadDate: ISODate,
 *    userid: ObjectID}
 */
-function getPostMeta(fileidString, file) {
+function getPostMeta(fileidString) {
     // var bucket = new mongodb.GridFSBucket(db, { bucketName: "posts"});
   return new Promise((resolve, reject) => {
     var col = db.collection('post.files');
     var fileid = ObjectID.createFromHexString(fileidString);
     var fields = {contentType:1, uploadDate:1, metadata:1};
     col.findOne({_id: fileid}, {fields: fields}).then(doc => {
-      resolve({
+      var meta = {
         postid: fileid,
         contentType: doc.contentType,
         uploadDate: doc.uploadDate,
         userid: doc.metadata.userid,
         tags: doc.metadata.tags
-      });
+      };
+      var col = db.collection('user');
+      col.findOne({_id: doc.metadata.userid}).then(user => {
+        meta.name = user.name;
+        meta.picture = user.picture;
+        resolve(meta);
+      }).catch(err => reject(err));
     }).catch(err => reject(err));
   });
 }
