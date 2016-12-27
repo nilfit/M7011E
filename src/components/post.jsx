@@ -6,6 +6,7 @@ javascript_time_ago.locale(require('javascript-time-ago/locales/en'));
 require('javascript-time-ago/intl-messageformat-global');
 require('intl-messageformat/dist/locale-data/en');
 
+//Component rendering a post.
 export default class Post extends React.Component {
   constructor(props){
     super(props);
@@ -19,6 +20,7 @@ export default class Post extends React.Component {
     const time_ago = new javascript_time_ago('en-US');
     const twitter = time_ago.style.twitter();
     
+    //Use twitter-style timestamps on the posts
     this.date = time_ago.format(new Date(this.props.postInfo.uploadDate), twitter);
   }
   
@@ -44,6 +46,7 @@ export default class Post extends React.Component {
   }
 }
 
+//Maps a list of tags (strings) to an unordered list of links
 class TagList extends React.Component {
   render() {
     return (

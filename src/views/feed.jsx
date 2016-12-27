@@ -17,6 +17,7 @@ export default class Feed extends React.Component {
     this.getGlobalFeed = this.getGlobalFeed.bind(this);
   }
   
+  //Updates the request url
   updateUrl(tag){
     //If the tag param is undefined (not set), we get the global feed, else the tag specific feed
     if (typeof tag != 'undefined'){
@@ -26,6 +27,7 @@ export default class Feed extends React.Component {
     }
   }
   
+  //Get the feed using the set url.
   getFeed() {
     $.ajax({
       method: "GET",
@@ -38,18 +40,21 @@ export default class Feed extends React.Component {
     });
   }
   
+  //Gets the global feed
   getGlobalFeed() {
     event.preventDefault();
     this.requestUrl = "/api/feed";
     this.getFeed();
   }
   
+  //Gets the Following feed
   getFollowingFeed() {
     event.preventDefault();
     this.requestUrl = "api/user/"+localStorage.id+"/feed";
     this.getFeed();
   }
   
+  //When the component is mounted (loaded into the HTML DOM), fetch the newest posts
   componentDidMount() {
     this.updateUrl(this.props.params.tag);
     //Fetch the first 10 posts
@@ -64,6 +69,7 @@ export default class Feed extends React.Component {
     });
   }
   
+  //When the component receives new props (for example on a page refresh), fetch the newest posts
   componentWillReceiveProps(nextProps){
     if (nextProps.params.tag != this.props.params.tag){
       //Component received new props. Empty the post list get the new posts
@@ -80,9 +86,10 @@ export default class Feed extends React.Component {
     }
   }
   
+  //Fetch the next posts
   handleClick(event){
     event.preventDefault();
-    //Fetch another 10 posts
+    //Fetch another 10 posts (depends on how many posts each page consists of)
     if (this.state.posts.length > 0){
       var lastUploadDate = this.state.posts[this.state.posts.length-1].uploadDate;
       $.ajax({
@@ -114,6 +121,7 @@ export default class Feed extends React.Component {
   }
 }
 
+//The component maps a list of posts to an unordered list of Post components
 class FeedList extends React.Component {
   render() {
     let list = null;

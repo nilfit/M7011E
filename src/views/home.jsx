@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Renders a simply homepage
 export default class Home extends React.Component {
   render() {
     return (

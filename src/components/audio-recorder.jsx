@@ -1,6 +1,7 @@
 import React from 'react';
 import Recorder from 'recorderjs';
 
+//This component handles all audio recording
 export default class AudioRecorder extends React.Component {
   constructor(){
     super();
@@ -12,12 +13,13 @@ export default class AudioRecorder extends React.Component {
     this.startRecording = this.startRecording.bind(this);
     this.stopRecording = this.stopRecording.bind(this);
     this.startUserMedia = this.startUserMedia.bind(this);
-    this.createDownloadLink = this.createDownloadLink.bind(this);
+    this.exportBlob = this.exportBlob.bind(this);
     
     var audio_context;
     var recorder;
   }
-
+  
+  //Initiates a recorder object
   startUserMedia(stream) {
     var input = this.audio_context.createMediaStreamSource(stream);
     console.log('Media stream created.');
@@ -26,7 +28,7 @@ export default class AudioRecorder extends React.Component {
     console.log('Recorder initialised.');
   }
   
-  
+  //Starts the audio recording. 
   startRecording() {
     this.recorder && this.recorder.record();
     console.log('Recording...');
@@ -38,6 +40,7 @@ export default class AudioRecorder extends React.Component {
     });
   }
   
+  //Stops the audio recording
   stopRecording() {
     this.recorder && this.recorder.stop();
     console.log('Stopped recording.');
@@ -50,14 +53,14 @@ export default class AudioRecorder extends React.Component {
       status: " Recording done."
     });
     
-    // create WAV download link using audio data blob
-    this.createDownloadLink();
-    
-    //Broken because of a bug.
+    this.exportBlob();
+    //Clears the recording so that a new recording is started the next time startRecording is called
     this.recorder.clear();
   }
   
-  createDownloadLink() {
+  //Converts the blob to an url for use in an audio tag
+  //Also calls a callback (setAudioBlob) to send the blob up to the parent component
+  exportBlob() {
     this.recorder && this.recorder.exportWAV((blob) => {
       this.props.setAudioBlob(blob);
       var url = URL.createObjectURL(blob);
@@ -66,6 +69,7 @@ export default class AudioRecorder extends React.Component {
     });
   }
   
+  //When the component is mounted, set up all the necessary parts
   componentDidMount() {
     try {
       // webkit shim

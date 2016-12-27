@@ -18,6 +18,7 @@ export default class Profile extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   
+  //Follow the user with the userid this.props.params.userId
   unfollowUser(){
     $.ajax({
       method: "POST",
@@ -30,6 +31,7 @@ export default class Profile extends React.Component {
     });
   }
   
+  //Unfollow the user with the userid this.props.params.userId
   followUser(){
     $.ajax({
       method: "POST",
@@ -82,9 +84,9 @@ export default class Profile extends React.Component {
     }
   }
   
+  //Fetch another 10 followed users
   handleClick() {
     event.preventDefault();
-    //Fetch another 10 followed users
     if (this.state.following.length > 0){
       $.ajax({
         method: "GET",
@@ -126,6 +128,7 @@ export default class Profile extends React.Component {
   }
 }
 
+//Component mapping an array of users to an unordered list of 'UserDisplay'
 class FollowingList extends React.Component {
   render() {
     return (
@@ -138,6 +141,7 @@ class FollowingList extends React.Component {
   }
 }
 
+//Component rendering a users name (with link to profile) and their picture
 class UserDisplay extends React.Component {
   render() {
     return (
