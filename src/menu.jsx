@@ -3,6 +3,7 @@ import {Link, IndexLink} from 'react-router';
 import LoginButton from './components/login-button.jsx';
 import LogoutButton from './components/logout-button.jsx';
 
+//Renders the menu bar at the top of the page.
 export default class Menu extends React.Component{
   render() {
     const isLoggedIn = (this.props.loginId != null);

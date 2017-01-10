@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Component logs the user in
 export default class LoginButton extends React.Component {
   constructor(props) {
     super(props);
@@ -35,7 +36,8 @@ export default class LoginButton extends React.Component {
       'onsuccess': this.onSignIn
     });
   }
-
+  
+  //If window.gapi exists, render the login button, else render the loginbutton when window.gapi is created
   componentDidMount() {
     if (window.gapi) {
       this.renderGoogleLoginButton();

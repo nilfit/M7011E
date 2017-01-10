@@ -15,7 +15,7 @@ export default class PostCreator extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.setAudioBlob = this.setAudioBlob.bind(this);
   }
-
+  
   setAudioBlob(blob){
     this.setState({audioblob: blob});
   }
@@ -24,7 +24,8 @@ export default class PostCreator extends React.Component {
   handleClick(event){
     event.preventDefault();
     var reader = new window.FileReader();
-
+  
+    //Encode the audioblob to base64
     reader.readAsDataURL(this.state.audioblob);
     reader.onloadend = () => {
       var base64data = reader.result;
@@ -34,7 +35,6 @@ export default class PostCreator extends React.Component {
         "tags": this.state.tags
       });
 
-      //AJAX POST REQUEST HERE
       $.ajax({
         method: "POST",
         url: "/api/post",
@@ -47,6 +47,7 @@ export default class PostCreator extends React.Component {
     };
   }
 
+  //Update the input field value
   handleChange(event){
     this.setState(
       {

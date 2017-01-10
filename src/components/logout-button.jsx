@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Component logs the user out
 export default class LogoutButton extends React.Component {
   constructor(props) {
     super(props);

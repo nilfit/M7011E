@@ -15,11 +15,14 @@ class Main extends React.Component{
     this.state = {loginId: null};
   }
   
+  //sets the user to be logged in
   setLogin(id) {
     id = id.replace(/^"(.*)"$/, '$1');
     this.setState({loginId: id});
     localStorage.id = id;
   }
+  
+  //sets the user to be not logged in
   unsetLogin() {
     this.setState({loginId: null});
     delete localStorage.id;
@@ -39,6 +42,7 @@ class Main extends React.Component{
   }
 }
 
+//If not logged in, redirect to home page ("/")
 function requireAuth(nextState, replace) {
   if (!localStorage.id) {
     replace({
@@ -48,6 +52,8 @@ function requireAuth(nextState, replace) {
   }
 }
 
+//Render components depending on the browser address bar URL. The main component is always rendered
+//and only one of the nested components is rendered.
 ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/" component={Main}>
